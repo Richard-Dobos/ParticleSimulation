@@ -10,7 +10,6 @@ out vec4 FragColor;
 uniform float Time;
 uniform vec2 Resolution;
 
-
 vec3 palette(float t) 
 {
     vec3 a = vec3(0.5, 0.5, 0.5);
@@ -23,7 +22,6 @@ vec3 palette(float t)
 
 void main() 
 {
-
     vec2 uv = (gl_FragCoord.xy * 2.0 - Resolution.xy) / Resolution.y;
     vec2 uv0 = uv;
     vec3 finalColor = vec3(0.0);

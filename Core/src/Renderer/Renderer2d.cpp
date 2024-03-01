@@ -5,7 +5,7 @@ namespace Core::Renderer
 	struct Vertex
 	{
 		glm::vec3 Pos;
-		float Color;
+		int Color;
 		//glm::vec4 Color;
 	};
 
@@ -82,6 +82,8 @@ namespace Core::Renderer
 	//void Renderer2d::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color) const
 	void Renderer2d::DrawQuad(const glm::vec3& position, const glm::vec2& size, uint8_t r, uint8_t g, uint8_t b, uint8_t a) const
 	{
+		float Color = r << 24 | g << 16 | b << 8 | a;
+
 		// Bottom Left Corner Vertex
 		s_Data.QuadVertexPtr->Pos = position;
 		s_Data.QuadVertexPtr->Color = r << 24 | g << 16 | b << 8 | a;

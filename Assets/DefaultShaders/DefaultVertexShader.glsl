@@ -8,7 +8,7 @@ out vec3 out_Pos;
 
 void main()
 {
-	out_Color = vec4(float((in_Color >> 24) & 0xFF) / 255.0, float((in_Color >> 16) & 0xFF) / 255.0, float((in_Color >> 8) & 0xFF) / 255.0, float(in_Color & 0xFF) / 255.0);
+	out_Color = vec4(float(in_Color >> 24 & 0xFF), float(in_Color >> 16 & 0xFF), float(in_Color >> 8 & 0xFF), float(in_Color & 0xFF));
 	out_Pos = in_Pos;
 	gl_Position = vec4(in_Pos, 1.0);
 }

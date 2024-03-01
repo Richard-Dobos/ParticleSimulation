@@ -51,15 +51,15 @@ namespace Core
             glfwTerminate();
         }
 
-        std::string vertShaderPath = findAssetFolder() + "/DefaultShaders/DefaultVertexShader.glsl";
-        std::string fragShaderPath = findAssetFolder() + "/DefaultShaders/DefaultFragShader.glsl";
+        std::string vertShaderPath = findAssetFolder() + "\\DefaultShaders\\DefaultVertexShader.glsl";
+        std::string fragShaderPath = findAssetFolder() + "\\DefaultShaders\\DefaultFragShader.glsl";
 
         Core::Utils::Shader defaultShader(vertShaderPath.c_str(), fragShaderPath.c_str());
+        
         defaultShader.bind();
         defaultShader.setUniform2f(defaultShader.getUniformLocation("Resolution"), { WINDOW_WIDTH, WINDOW_HEIGHT });
         
         Core::Renderer::Renderer2d renderer;
-        glm::vec4 color = {  };
 
         uint64_t frameCount = 0;
 
@@ -70,23 +70,20 @@ namespace Core
         while (!glfwWindowShouldClose(window)) 
         {
             Core::Utils::Timer timer;
-            // Clear the color buffer
             glClear(GL_COLOR_BUFFER_BIT);
 
             time = glfwGetTime();
             defaultShader.setUniform1f(defaultShader.getUniformLocation("Time"), time);
             
-            // Draw your OpenGL content here
 			renderer.beginBatch();
             //renderer.DrawQuad({ -1.0f, -1.0f, 1.0f }, { 2.0f, 2.0f }, color);
-            renderer.DrawQuad({ -1.0f, -1.0f, 1.0f }, { 2, 2 }, 255, 255, 255, 255);
+            renderer.DrawQuad({ -1.0f, -1.0f, 1.0f }, { 2, 2 }, 0, 255, 0, 255);
             renderer.endBatch();
+            
             frameCount++;
             
-            // Swap front and back buffers
             glfwSwapBuffers(window);
 
-            // Poll for and process events
             glFlush();
             glfwPollEvents();
         }
@@ -96,11 +93,13 @@ namespace Core
         float AVG =  frameCount / timeTaken;
 
         std::cout << GREEN_BACKGROUND << BLACK << std::format("\nAverage FPS: {}\nAverage Frame Time: {}ms", AVG, timeTaken * 1000.0f / frameCount) << RESET;
-
+#ifdef _DEBUG
+        std::cout << WHITE_BACKGROUND << BLACK << "\nPress Enter to exit.\n" << RESET << std::cin.get();
+#endif
         glfwTerminate();
     }
 
-    std::string Application::findAssetFolder()
+    std::string Application::findAssetFolder() const
     {
         std::filesystem::path currentPath = std::filesystem::current_path();
         std::cout << WHITE_BACKGROUND << BLACK << "Current Path: " << currentPath.string() << '\n' << RESET;
@@ -124,10 +123,11 @@ namespace Core
 
         if (foundFolder) 
         {
-            std::cout << "Asset path: " << assetPath << '\n';
+            std::cout << GREEN_BACKGROUND << BLACK << "Asset path: " << assetPath << '\n';
             return assetPath.string();
         }
 
+        std::cout << RED_BACKGROUND << BLACK << "Couldn't find folder \"Assets\"\n";
         return currentPath.string();
     }
 }

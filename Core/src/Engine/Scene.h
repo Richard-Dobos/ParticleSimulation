@@ -1,5 +1,7 @@
 #pragma once
 
+#include <map>
+#include <memory>
 #include <vector>
 
 #include "GameObject.h"
@@ -8,11 +10,12 @@ namespace Core::Engine
 {
 	class Scene 
 	{
-	public:	
+	public:
 		Scene();
 		~Scene();
 		
 	private:
-		std::vector<GameObject> m_GameObjects;
+		//std::map<uint64_t, Component> m_ComponentsID;
+		std::map<uint64_t, GameObject> m_GameObjects;
 	};
 }

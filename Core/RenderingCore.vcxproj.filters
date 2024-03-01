@@ -94,6 +94,8 @@
     <None Include="vendors\GLFW\lib-vc2022\glfw3.dll" />
     <None Include="res\DefaultShaders\DefaultVertexShader.glsl" />
     <None Include="res\DefaultShaders\DefaultFragShader.glsl" />
+    <None Include="Assets\DefaultShaders\DefaultVertexShader.glsl" />
+    <None Include="Assets\DefaultShaders\DefaultFragShader.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="vendors\GLFW\lib-vc2022\glfw3.lib" />
