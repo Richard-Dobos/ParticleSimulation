@@ -1,16 +1,10 @@
-#include <memory>
-#include <vector>
 #include <format>
 #include <chrono>
 #include <filesystem>
 
-#include "glm.hpp"
-#include "gtc/matrix_transform.hpp"
 #include "Application.h"
 #include "Utils/Shader.h"
 #include "Utils/Timer.h"
-#include "Renderer/Buffer.h"
-#include "Renderer/VertexArray.h"
 #include "Renderer/Renderer2d.h"
 
 namespace Core
@@ -75,7 +69,7 @@ namespace Core
             defaultShader.setUniform1f("Time", glfwGetTime());
 
 			renderer.beginBatch();
-            renderer.DrawQuad({ -1.0f, -1.0f, 1.0f }, { 2, 2 }, 255 / 255, 255 / 255, 255 / 255, 255);
+            renderer.DrawQuad({ -1.0f, -1.0f, 1.0f }, { 2, 2 }, 255, 255, 255, 255);
             renderer.endBatch();
             
             frameCount++;

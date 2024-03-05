@@ -6,7 +6,6 @@ namespace Core::Renderer
 	{
 		glm::vec3 Pos;
 		int Color;
-		//glm::vec4 Color;
 	};
 
 	struct RendererStorage
@@ -79,29 +78,26 @@ namespace Core::Renderer
 		s_Data.IndexCount = 0;
 	}
 
-	//void Renderer2d::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color) const
 	void Renderer2d::DrawQuad(const glm::vec3& position, const glm::vec2& size, uint8_t r, uint8_t g, uint8_t b, uint8_t a) const
 	{
-		float Color = r << 24 | g << 16 | b << 8 | a;
-
 		// Bottom Left Corner Vertex
 		s_Data.QuadVertexPtr->Pos = position;
-		s_Data.QuadVertexPtr->Color = r << 24 | g << 16 | b << 8 | a;
+		s_Data.QuadVertexPtr->Color = r / 255 << 24 | g / 255 << 16 | b / 255 << 8 | a;
 		s_Data.QuadVertexPtr++;
 
 		// Bottom Right Corner Vertex
 		s_Data.QuadVertexPtr->Pos = { position.x + size.x, position.y, 1.0f };
-		s_Data.QuadVertexPtr->Color = r << 24 | g << 16 | b << 8 | a;
+		s_Data.QuadVertexPtr->Color = r / 255 << 24 | g / 255 << 16 | b / 255 << 8 | a;
 		s_Data.QuadVertexPtr++;
 
 		// Top Right Corner Vertex
 		s_Data.QuadVertexPtr->Pos = { position.x + size.x, position.y + size.y, 1.0f };
-		s_Data.QuadVertexPtr->Color = r << 24 | g << 16 | b << 8 | a;
+		s_Data.QuadVertexPtr->Color = r / 255 << 24 | g / 255 << 16 | b / 255 << 8 | a;
 		s_Data.QuadVertexPtr++;
 
 		//Top Left Corner Vertex
 		s_Data.QuadVertexPtr->Pos = { position.x, position.y + size.y, 1.0f };
-		s_Data.QuadVertexPtr->Color = r << 24 | g << 16 | b << 8 | a;
+		s_Data.QuadVertexPtr->Color = r / 255 << 24 | g / 255 << 16 | b / 255 << 8 | a;
 		s_Data.QuadVertexPtr++;
 
 		s_Data.IndexCount += 6;
