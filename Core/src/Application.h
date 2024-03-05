@@ -13,12 +13,7 @@ namespace Core
 	public:
 		Application() = default;
 
-		virtual void start();
 		void Update();
-		
-	private:
-		void runTime();
-
 	private:
 		std::string findAssetFolder() const;
 	};

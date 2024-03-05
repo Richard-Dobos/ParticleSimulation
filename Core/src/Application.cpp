@@ -54,30 +54,28 @@ namespace Core
         std::string vertShaderPath = findAssetFolder() + "\\DefaultShaders\\DefaultVertexShader.glsl";
         std::string fragShaderPath = findAssetFolder() + "\\DefaultShaders\\DefaultFragShader.glsl";
 
-        Core::Utils::Shader defaultShader(vertShaderPath.c_str(), fragShaderPath.c_str());
-        
+        Utils::Shader defaultShader(vertShaderPath.c_str(), fragShaderPath.c_str());
         defaultShader.bind();
-        defaultShader.setUniform2f(defaultShader.getUniformLocation("Resolution"), { WINDOW_WIDTH, WINDOW_HEIGHT });
-        
-        Core::Renderer::Renderer2d renderer;
+
+        Renderer::Renderer2d renderer;
 
         uint64_t frameCount = 0;
 
         float time = 0;
 		auto start = std::chrono::steady_clock::now();
 
+        defaultShader.setUniform2f("Resolution", { WINDOW_WIDTH, WINDOW_HEIGHT });
+
         // Main rendering loop
         while (!glfwWindowShouldClose(window)) 
         {
-            Core::Utils::Timer timer;
+            Utils::Timer timer;
             glClear(GL_COLOR_BUFFER_BIT);
 
-            time = glfwGetTime();
-            defaultShader.setUniform1f(defaultShader.getUniformLocation("Time"), time);
-            
+            defaultShader.setUniform1f("Time", glfwGetTime());
+
 			renderer.beginBatch();
-            //renderer.DrawQuad({ -1.0f, -1.0f, 1.0f }, { 2.0f, 2.0f }, color);
-            renderer.DrawQuad({ -1.0f, -1.0f, 1.0f }, { 2, 2 }, 0, 255, 0, 255);
+            renderer.DrawQuad({ -1.0f, -1.0f, 1.0f }, { 2, 2 }, 255 / 255, 255 / 255, 255 / 255, 255);
             renderer.endBatch();
             
             frameCount++;
@@ -93,9 +91,7 @@ namespace Core
         float AVG =  frameCount / timeTaken;
 
         std::cout << GREEN_BACKGROUND << BLACK << std::format("\nAverage FPS: {}\nAverage Frame Time: {}ms", AVG, timeTaken * 1000.0f / frameCount) << RESET;
-#ifdef _DEBUG
-        std::cout << WHITE_BACKGROUND << BLACK << "\nPress Enter to exit.\n" << RESET << std::cin.get();
-#endif
+      
         glfwTerminate();
     }
 

@@ -19,22 +19,23 @@ namespace Core::Utils
 		void bind() const;
 		void unBind() const;
 		
-		GLint getUniformLocation(const std::string& name);
 
-		void setUniform1f(GLint location, float uniform) const;
-		void setUniform2f(GLint location, glm::vec2 uniform) const;
-		void setUniform3f(GLint location, glm::vec3 uniform) const;
-		void setUniform4f(GLint location, glm::vec4 uniform) const;
+		void setUniform1f(const std::string& name, float uniform);
+		void setUniform2f(const std::string& name, glm::vec2 uniform);
+		void setUniform3f(const std::string& name, glm::vec3 uniform);
+		void setUniform4f(const std::string& name, glm::vec4 uniform);
 
-		void setUniform1i(GLint location, int uniform) const;
-		void setUniform2i(GLint location, glm::ivec2 uniform) const;
-		void setUniform3i(GLint location, glm::ivec3 uniform) const;
-		void setUniform4i(GLint location, glm::ivec4 uniform) const;
+		void setUniform1i(const std::string& name, int uniform);
+		void setUniform2i(const std::string& name, glm::ivec2 uniform);
+		void setUniform3i(const std::string& name, glm::ivec3 uniform);
+		void setUniform4i(const std::string& name, glm::ivec4 uniform);
 
-		void setUniformMat3f(GLint location,const glm::mat3& uniform) const;
-		void setUniformMat4f(GLint location,const glm::mat4& uniform) const;
+		void setUniformMat3f(const std::string& name,const glm::mat3& uniform);
+		void setUniformMat4f(const std::string& name, const glm::mat4& uniform);
 
 	private:
+		GLint getUniformLocation(const std::string& name);
+
 		std::string parseShader(const char* shaderPath) const;
 		
 		bool createShaderProgram(const char* shaderSource, GLenum shaderType) const;

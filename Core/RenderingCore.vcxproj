@@ -159,13 +159,13 @@ xcopy /y /d "$(SolutionDir)\$(ProjectName)\vendors\\GLEW\lib\glew32.dll" "$(OutD
     <ClCompile Include="src\Renderer\Renderer2d.cpp" />
     <ClCompile Include="src\Renderer\VertexArray.cpp" />
     <ClCompile Include="src\Renderer\Buffer.cpp" />
+    <ClCompile Include="src\Utils\RandomNumberGenerator.h" />
     <ClCompile Include="src\Utils\Shader.cpp" />
-    <ClCompile Include="src\Window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\Core.h" />
-    <ClInclude Include="src\Engine\Components\Component.h" />
+    <ClInclude Include="src\Engine\Components\Components.h" />
     <ClInclude Include="src\Engine\GameObject.h" />
     <ClInclude Include="src\Engine\Scene.h" />
     <ClInclude Include="src\Renderer\Renderer2d.h" />
@@ -173,7 +173,6 @@ xcopy /y /d "$(SolutionDir)\$(ProjectName)\vendors\\GLEW\lib\glew32.dll" "$(OutD
     <ClInclude Include="src\Renderer\Buffer.h" />
     <ClInclude Include="src\Utils\Shader.h" />
     <ClInclude Include="src\Utils\Timer.h" />
-    <ClInclude Include="src\Window\Window.h" />
     <ClInclude Include="vendors\GLEW\include\eglew.h" />
     <ClInclude Include="vendors\GLEW\include\glew.h" />
     <ClInclude Include="vendors\GLEW\include\glxew.h" />

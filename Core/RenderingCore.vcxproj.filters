@@ -33,7 +33,7 @@
     <ClCompile Include="src\Engine\Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Window\Window.cpp">
+    <ClCompile Include="src\Utils\RandomNumberGenerator.h">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -77,16 +77,13 @@
     <ClInclude Include="src\Engine\GameObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Components\Component.h">
+    <ClInclude Include="src\Engine\Components\Components.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Utils\Timer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Window\Window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -141,53 +141,53 @@ namespace Core::Utils
 		glUseProgram(0);
 	}
 
-	void Shader::setUniform1f(GLint location, float uniform) const
+	void Shader::setUniform1f(const std::string& name, float uniform)
 	{
-		glUniform1f(location, uniform);
+		glUniform1f(getUniformLocation(name), uniform);
 	}
 
-	void Shader::setUniform2f(GLint location, glm::vec2 uniform) const
+	void Shader::setUniform2f(const std::string& name, glm::vec2 uniform)
 	{
-		glUniform2f(location, uniform.x, uniform.y);
+		glUniform2f(getUniformLocation(name), uniform.x, uniform.y);
 	}
 
-	void Shader::setUniform3f(GLint location, glm::vec3 uniform) const
+	void Shader::setUniform3f(const std::string& name, glm::vec3 uniform)
 	{
-		glUniform3f(location, uniform.x, uniform.y, uniform.z);
+		glUniform3f(getUniformLocation(name), uniform.x, uniform.y, uniform.z);
 	}
 
-	void Shader::setUniform4f(GLint location, glm::vec4 uniform) const
+	void Shader::setUniform4f(const std::string& name, glm::vec4 uniform)
 	{
-		glUniform4f(location, uniform.x, uniform.y, uniform.z, uniform.w);
+		glUniform4f(getUniformLocation(name), uniform.x, uniform.y, uniform.z, uniform.w);
 	}
 
-	void Shader::setUniform1i(GLint location, int uniform) const
+	void Shader::setUniform1i(const std::string& name, int uniform)
 	{
-		glUniform1i(location, uniform);
+		glUniform1i(getUniformLocation(name), uniform);
 	}
 
-	void Shader::setUniform2i(GLint location, glm::ivec2 uniform) const
+	void Shader::setUniform2i(const std::string& name, glm::ivec2 uniform)
 	{
-		glUniform2i(location, uniform.x, uniform.y);
+		glUniform2i(getUniformLocation(name), uniform.x, uniform.y);
 	}
 
-	void Shader::setUniform3i(GLint location, glm::ivec3 uniform) const
+	void Shader::setUniform3i(const std::string& name, glm::ivec3 uniform)
 	{
-		glUniform3i(location, uniform.x, uniform.y, uniform.z);
+		glUniform3i(getUniformLocation(name), uniform.x, uniform.y, uniform.z);
 	}
 
-	void Shader::setUniform4i(GLint location, glm::ivec4 uniform) const
+	void Shader::setUniform4i(const std::string& name, glm::ivec4 uniform)
 	{
-		glUniform4i(location, uniform.x, uniform.y, uniform.z, uniform.w);
+		glUniform4i(getUniformLocation(name), uniform.x, uniform.y, uniform.z, uniform.w);
 	}
 
-	void Shader::setUniformMat3f(GLint location, const glm::mat3& uniform) const
+	void Shader::setUniformMat3f(const std::string& name, const glm::mat3& uniform)
 	{
-		glUniformMatrix3fv(location, 1, GL_FALSE, &uniform[0][0]);
+		glUniformMatrix3fv(getUniformLocation(name), 1, GL_FALSE, &uniform[0][0]);
 	}
 
-	void Shader::setUniformMat4f(GLint location, const glm::mat4& uniform) const
+	void Shader::setUniformMat4f(const std::string& name, const glm::mat4& uniform)
 	{
-		glUniformMatrix4fv(location, 1, GL_FALSE, &uniform[0][0]);
+		glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, &uniform[0][0]);
 	}
 }
