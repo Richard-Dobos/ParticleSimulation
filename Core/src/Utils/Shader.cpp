@@ -104,27 +104,27 @@ namespace Core::Utils
 		switch (shaderType)
 		{
 		default:
-			std::cout << RED_BACKGROUND << BLACK << "Shader compilation failed!\n" << messageBuffer.data() << RESET;
+			std::cerr << RED_BACKGROUND << BLACK << "Shader compilation failed!\n" << messageBuffer.data() << RESET;
 			break;
 
 		case GL_VERTEX_SHADER:
-			std::cout << RED_BACKGROUND << BLACK << "Vertex Shader compilation failed!\n" << messageBuffer.data() << RESET;
+			std::cerr << RED_BACKGROUND << BLACK << "Vertex Shader compilation failed!\n" << messageBuffer.data() << RESET;
 			break;
 
 		case GL_FRAGMENT_SHADER:
-			std::cout << RED_BACKGROUND << BLACK << "Fragment Shader compilation failed!\n" << messageBuffer.data() << RESET;
+			std::cerr << RED_BACKGROUND << BLACK << "Fragment Shader compilation failed!\n" << messageBuffer.data() << RESET;
 			break;
 
 		case GL_GEOMETRY_SHADER:
-			std::cout << RED_BACKGROUND << BLACK << "Geometry Shader compilation failed!\n" << messageBuffer.data() << RESET;
+			std::cerr << RED_BACKGROUND << BLACK << "Geometry Shader compilation failed!\n" << messageBuffer.data() << RESET;
 			break;
 
 		case GL_TESS_EVALUATION_SHADER:
-			std::cout << RED_BACKGROUND << BLACK << "Tessellation Evaluation Shader compilation failed!\n" << messageBuffer.data() << RESET;
+			std::cerr << RED_BACKGROUND << BLACK << "Tessellation Evaluation Shader compilation failed!\n" << messageBuffer.data() << RESET;
 			break;
 
 		case GL_TESS_CONTROL_SHADER:
-			std::cout << RED_BACKGROUND << BLACK << "Tessellation Control Shader compilation failed!\n" << messageBuffer.data() << RESET;
+			std::cerr << RED_BACKGROUND << BLACK << "Tessellation Control Shader compilation failed!\n" << messageBuffer.data() << RESET;
 			break;
 		}
 	}
@@ -157,41 +157,47 @@ namespace Core::Utils
 
 	void Shader::setUniformVector(const std::string& name, ShaderUniformDataType uniformDataType, const void* value, uint32_t count)
 	{
-		int* values = (int*)value;
-
 		switch (uniformDataType)
 		{
 		case ShaderUniformDataType::SHADER_UNIFORM_FLOAT:
-			glUniform1f(getUniformLocation(name), (GLfloat)values[0]);
+			glUniform1fv(getUniformLocation(name), count, (const GLfloat*) value);
 			break;
 
 		case ShaderUniformDataType::SHADER_UNIFORM_VEC2:
-			glUniform2f(getUniformLocation(name), (GLfloat)values[0], (GLfloat)values[1]);
+			glUniform2fv(getUniformLocation(name), count, (const GLfloat*) value);
 			break;
 
 		case ShaderUniformDataType::SHADER_UNIFROM_VEC3:
-			glUniform3f(getUniformLocation(name), (GLfloat)values[0], (GLfloat)values[1], (GLfloat)values[2]);
+			glUniform3fv(getUniformLocation(name), count, (const GLfloat*)value);
 			break;
 
 		case ShaderUniformDataType::SHADER_UNIFORM_VEC4:
-			glUniform4f(getUniformLocation(name), (GLfloat)values[0], (GLfloat)values[1], (GLfloat)values[2], (GLfloat)values[3]);
+			glUniform4fv(getUniformLocation(name), count, (const GLfloat*)value);
 			break;
 
 		case ShaderUniformDataType::SHADER_UNIFORM_INT:
-			glUniform1i(getUniformLocation(name), values[0]);
+			glUniform1iv(getUniformLocation(name), count, (const GLint*)value);
 			break;
 
 		case ShaderUniformDataType::SHADER_UNIFORM_IVEC2:
-			glUniform2i(getUniformLocation(name), values[0], values[1]);
+			glUniform2iv(getUniformLocation(name), count, (const GLint*)value);
 			break;
 			
 		case ShaderUniformDataType::SHADER_UNIFROM_IVEC3:
-			glUniform3i(getUniformLocation(name), values[0], values[1], values[2]);
+			glUniform3iv(getUniformLocation(name), count, (const GLint*)value);
 			break;
 
 		case ShaderUniformDataType::SHADER_UNIFORM_IVEC4:
-			glUniform4i(getUniformLocation(name), values[0], values[1], values[2], values[3]);
+			glUniform4iv(getUniformLocation(name), count, (const GLint*)value);
 			break;
-		};
+
+		default:
+			std::cerr << RED_BACKGROUND << BLACK << "Uniform Data Type doesn't exist!\n" << RESET;
+		}
+	}
+
+	void Shader::setUniformMat4x4(const std::string& name, const glm::mat4& matrix)
+	{
+		glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, &matrix[0][0]);
 	}
 }

@@ -6,6 +6,7 @@
 
 #include "Core.h"
 #include "glew.h"
+#include "glm.hpp"
 
 namespace Core::Utils
 {
@@ -36,6 +37,7 @@ namespace Core::Utils
 		void unBind() const;
 
 		void setUniformVector(const std::string& name, ShaderUniformDataType uniformDataType, const void* value, uint32_t count);
+		void setUniformMat4x4(const std::string& name, const glm::mat4& matrix);
 
 	private:
 		GLint getUniformLocation(const std::string& name);
