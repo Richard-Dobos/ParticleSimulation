@@ -1,6 +1,7 @@
 #include "Scene.h"
 
 #include "glfw3.h"
+#include "gtc/matrix_transform.hpp"
 
 namespace Core::Engine
 {
@@ -30,8 +31,10 @@ namespace Core::Engine
 		{
 			const Transform* tf = &m_GameObjectsTransforms[gameObject.first];
 			const Color* cl = &m_GameObjectsColors[gameObject.first];
+			const glm::mat4 model = glm::translate(glm::mat4(1.0f), tf->pos);	
 
 			m_Renderer.DrawQuad({ tf->pos.x, tf->pos.y, 1.0f }, tf->scale, cl->r, cl->g, cl->b, cl->a);
+
 		}
 
 		m_Renderer.endBatch();

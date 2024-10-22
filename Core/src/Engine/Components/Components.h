@@ -6,7 +6,8 @@ namespace Core::Engine
 {
 	struct Transform
 	{
-		glm::vec2 pos, scale;
+		glm::vec3 pos, scale;
+		float rotation;
 	};
 	
 	struct Color
