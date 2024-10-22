@@ -115,7 +115,7 @@
       <PreprocessorDefinitions>RENDERING_CORE_API_EXPORT_DLL;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Core\src;$(SolutionDir)Core\vendors\GLEW\include;$(SolutionDir)Core\vendors\GLFW\include\GLFW;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Core\src;$(SolutionDir)Core\vendors\glm;$(SolutionDir)Core\vendors\GLEW\include;$(SolutionDir)Core\vendors\GLFW\include\GLFW;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -133,7 +133,7 @@
       <PreprocessorDefinitions>RENDERING_CORE_API_EXPORT_DLL;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Core\src;$(SolutionDir)Core\vendors\GLEW\include;$(SolutionDir)Core\vendors\GLFW\include\GLFW;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Core\src;$(SolutionDir)Core\vendors\glm;$(SolutionDir)Core\vendors\GLEW\include;$(SolutionDir)Core\vendors\GLFW\include\GLFW;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -141,7 +141,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)$(Platform)\bin\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Core.lib</AdditionalDependencies>
+      <AdditionalDependencies>Core.lib;glew32.lib;glfw3.lib;opengl32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

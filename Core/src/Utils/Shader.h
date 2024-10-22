@@ -6,38 +6,42 @@
 
 #include "Core.h"
 #include "glew.h"
-#include "glm.hpp"
 
 namespace Core::Utils
 {
-	class Shader
+	enum CORE_API ShaderUniformDataType : uint8_t
+	{
+		SHADER_UNIFORM_FLOAT = 0,
+		SHADER_UNIFORM_VEC2,
+		SHADER_UNIFROM_VEC3,
+		SHADER_UNIFORM_VEC4,
+		SHADER_UNIFORM_INT,
+		SHADER_UNIFORM_IVEC2,
+		SHADER_UNIFROM_IVEC3,
+		SHADER_UNIFORM_IVEC4,
+		SHADER_UNIFORM_SAMPLER2D,
+		SHADER_UNIFORM_MAT2X2,
+		SHADER_UNIFROM_MAT3X3,
+		SHADER_UNIFROM_MAT4X4
+	};
+
+	class CORE_API Shader
 	{
 	public:
 		Shader(const char* vertexShaderPath, const char* fragmentShaderPath);
+		Shader(const std::string& vertexShaderCode, const std::string& fragmentShaderCode);
 		~Shader();
 
 		void bind() const;
 		void unBind() const;
-		
 
-		void setUniform1f(const std::string& name, float uniform);
-		void setUniform2f(const std::string& name, glm::vec2 uniform);
-		void setUniform3f(const std::string& name, glm::vec3 uniform);
-		void setUniform4f(const std::string& name, glm::vec4 uniform);
-
-		void setUniform1i(const std::string& name, int uniform);
-		void setUniform2i(const std::string& name, glm::ivec2 uniform);
-		void setUniform3i(const std::string& name, glm::ivec3 uniform);
-		void setUniform4i(const std::string& name, glm::ivec4 uniform);
-
-		void setUniformMat3f(const std::string& name,const glm::mat3& uniform);
-		void setUniformMat4f(const std::string& name, const glm::mat4& uniform);
+		void setUniformVector(const std::string& name, ShaderUniformDataType uniformDataType, const void* value, uint32_t count);
 
 	private:
 		GLint getUniformLocation(const std::string& name);
 
 		std::string parseShader(const char* shaderPath) const;
-		
+
 		bool createShaderProgram(const char* shaderSource, GLenum shaderType) const;
 		bool checkShaderCompilationStatus(uint32_t shaderID) const;
 		void checkShaderErrorMessage(uint32_t shaderID, GLenum shaderType) const;
@@ -45,8 +49,9 @@ namespace Core::Utils
 	private:
 		std::unordered_map<std::string, GLint> m_UniformCache;
 
+		std::string m_ComputeShaderPath;
 		std::string m_VertexShaderSource;
 		std::string m_FragmentShaderSource;
 		uint32_t m_ShaderProgramID;
 	};
-}
+};

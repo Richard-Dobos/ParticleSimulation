@@ -3,9 +3,11 @@
 #include <iostream>
 #include <chrono>
 
+#include "Core.h"
+
 namespace Core::Utils
 {
-	class Timer
+	class CORE_API Timer
 	{
 	public:
         Timer()

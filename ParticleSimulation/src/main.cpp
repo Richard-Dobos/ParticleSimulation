@@ -7,4 +7,4 @@ int main()
 	Core::Application app = Core::Application();
 
 	app.Update();
-}
+}	

@@ -1,12 +1,14 @@
 #pragma once
 
+#include "glew.h"
+#include "glfw3.h"
+
+
 #ifdef RENDERING_CORE_API_EXPORT_DLL
 	#define CORE_API __declspec(dllexport)
 #else
 	#define CORE_API __declspec(dllimport)
 #endif
-
-#include <iostream>
 
 #define RESET   "\033[0m"
 

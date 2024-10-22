@@ -72,12 +72,18 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(SolutionDir)\$(Platform)\bin\$(Configuration)</OutDir>
+    <OutDir>$(SolutionDir)$(Platform)\bin\$(Configuration)</OutDir>
     <IntDir>$(SolutionDir)\$(Platform)\bin-int\$(Configuration)</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(SolutionDir)\$(Platform)\bin\$(Configuration)</OutDir>
+    <OutDir>$(SolutionDir)$(Platform)\bin\$(Configuration)</OutDir>
     <IntDir>$(SolutionDir)\$(Platform)\bin-int\$(Configuration)</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)$(Platform)\bin\$(Configuration)</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)$(Platform)\bin\$(Configuration)</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -85,6 +91,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -99,6 +106,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -137,7 +145,7 @@ xcopy /y /d "$(SolutionDir)\$(ProjectName)\vendors\\GLEW\lib\glew32.dll" "$(OutD
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;RENDERING_CORE_API_EXPORT_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\vendors\GLM\;$(SolutionDir)$(ProjectName)\src;$(SolutionDir)$(ProjectName)\vendors\GLEW\include;$(SolutionDir)$(ProjectName)\vendors\GLFW\include\GLFW;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\vendors\glm;$(SolutionDir)$(ProjectName)\src;$(SolutionDir)$(ProjectName)\vendors\GLEW\include;$(SolutionDir)$(ProjectName)\vendors\GLFW\include\GLFW;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -155,16 +163,19 @@ xcopy /y /d "$(SolutionDir)\$(ProjectName)\vendors\\GLEW\lib\glew32.dll" "$(OutD
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp" />
+    <ClCompile Include="src\Engine\Components\Camera.cpp" />
     <ClCompile Include="src\Engine\Scene.cpp" />
     <ClCompile Include="src\Renderer\Renderer2d.cpp" />
     <ClCompile Include="src\Renderer\VertexArray.cpp" />
     <ClCompile Include="src\Renderer\Buffer.cpp" />
     <ClCompile Include="src\Utils\RandomNumberGenerator.h" />
     <ClCompile Include="src\Utils\Shader.cpp" />
+    <ClCompile Include="src\Window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\Core.h" />
+    <ClInclude Include="src\Engine\Components\Camera.h" />
     <ClInclude Include="src\Engine\Components\Components.h" />
     <ClInclude Include="src\Engine\GameObject.h" />
     <ClInclude Include="src\Engine\Scene.h" />
@@ -173,12 +184,14 @@ xcopy /y /d "$(SolutionDir)\$(ProjectName)\vendors\\GLEW\lib\glew32.dll" "$(OutD
     <ClInclude Include="src\Renderer\Buffer.h" />
     <ClInclude Include="src\Utils\Shader.h" />
     <ClInclude Include="src\Utils\Timer.h" />
+    <ClInclude Include="src\Window\Window.h" />
     <ClInclude Include="vendors\GLEW\include\eglew.h" />
     <ClInclude Include="vendors\GLEW\include\glew.h" />
     <ClInclude Include="vendors\GLEW\include\glxew.h" />
     <ClInclude Include="vendors\GLEW\include\wglew.h" />
     <ClInclude Include="vendors\GLFW\include\GLFW\glfw3.h" />
     <ClInclude Include="vendors\GLFW\include\GLFW\glfw3native.h" />
+    <ClInclude Include="vendors\GLM\glm.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\DefaultShaders\DefaultFragShader.glsl" />

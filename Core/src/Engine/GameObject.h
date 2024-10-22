@@ -1,6 +1,7 @@
 #pragma once
 
-#include "map"
+#include <map>
+#include<iostream>
 
 #include "Components/Components.h"
 
@@ -9,13 +10,10 @@ namespace Core::Engine
 	class GameObject
 	{
 	public:
-		GameObject(Transform transform)
-			:m_Transform(transform) {}
 		GameObject() = default;
 		~GameObject() = default;
 
 	public:
-		Material m_Material;
-		Transform m_Transform;
+		uint64_t UID;
 	};
 }

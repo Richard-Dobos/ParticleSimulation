@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include "Core.h"
+
 #include "glm.hpp"
 #include "glew.h"
 #include "Buffer.h"
@@ -13,7 +14,7 @@
 
 namespace Core::Renderer
 {
-	class Renderer2d
+	class CORE_API Renderer2d
 	{
 	public:
 		Renderer2d();

@@ -6,8 +6,12 @@ namespace Core::Engine
 {
 	struct Transform
 	{
-		glm::vec2 pos;
-		glm::vec2 scale;
+		glm::vec2 pos, scale;
+	};
+	
+	struct Color
+	{
+		uint8_t r, g, b, a;
 	};
 
 	struct Material

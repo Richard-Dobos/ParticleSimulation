@@ -3,19 +3,33 @@
 #include <cstdarg>
 
 #include "Shader.h"
+#include "glm.hpp"
 
 namespace Core::Utils
 {
-	Shader::Shader(const char* vertexShaderPath, const char* fragmentShaderPath)
+	Shader::Shader(const char* vertexShaderFilePath, const char* fragmentShaderFilePath)
 	{
-		std::cout << YELLOW_BACKGROUND << BLACK << "Compiling Shader: " << vertexShaderPath << '\n' << RESET;
-		std::cout << YELLOW_BACKGROUND << BLACK << "Compiling Shader: " << fragmentShaderPath << '\n' << RESET;
+		std::cout << YELLOW_BACKGROUND << BLACK << "Compiling Shader: " << vertexShaderFilePath << '\n' << RESET;
+		std::cout << YELLOW_BACKGROUND << BLACK << "Compiling Shader: " << fragmentShaderFilePath << '\n' << RESET;
 
 		m_ShaderProgramID = glCreateProgram();
-		m_VertexShaderSource = parseShader(vertexShaderPath);
-		m_FragmentShaderSource = parseShader(fragmentShaderPath);
+		m_VertexShaderSource = parseShader(vertexShaderFilePath);
+		m_FragmentShaderSource = parseShader(fragmentShaderFilePath);
 
 		if (createShaderProgram(m_VertexShaderSource.c_str(), GL_VERTEX_SHADER) && createShaderProgram(m_FragmentShaderSource.c_str(), GL_FRAGMENT_SHADER))
+			glLinkProgram(m_ShaderProgramID);
+
+		else
+			glDeleteProgram(m_ShaderProgramID);
+	}
+
+	Shader::Shader(const std::string& vertexShaderCode, const std::string& fragmentShaderCode)
+	{
+		std::cout << YELLOW_BACKGROUND << BLACK << "Compiling Shaders.\n" << RESET;
+
+		m_ShaderProgramID = glCreateProgram();
+
+		if (createShaderProgram(vertexShaderCode.c_str(), GL_VERTEX_SHADER) && createShaderProgram(fragmentShaderCode.c_str(), GL_FRAGMENT_SHADER))
 			glLinkProgram(m_ShaderProgramID);
 
 		else
@@ -34,7 +48,7 @@ namespace Core::Utils
 
 		if (!stream.is_open())
 		{
-			shaderPath == nullptr ? std::cout << GREEN_BACKGROUND<< BLACK << "Shader Path Not Specified.\n" << RESET : std::cout << RED_BACKGROUND << BLACK<< "ERROR: Failed to open SHADER at path: " << shaderPath << "\n" << RESET;
+			shaderPath == nullptr ? std::cout << GREEN_BACKGROUND << BLACK << "Shader Path Not Specified.\n" << RESET : std::cout << RED_BACKGROUND << BLACK << "ERROR: Failed to open SHADER at path: " << shaderPath << "\n" << RESET;
 			return "\0";
 		}
 
@@ -141,53 +155,43 @@ namespace Core::Utils
 		glUseProgram(0);
 	}
 
-	void Shader::setUniform1f(const std::string& name, float uniform)
+	void Shader::setUniformVector(const std::string& name, ShaderUniformDataType uniformDataType, const void* value, uint32_t count)
 	{
-		glUniform1f(getUniformLocation(name), uniform);
-	}
+		int* values = (int*)value;
 
-	void Shader::setUniform2f(const std::string& name, glm::vec2 uniform)
-	{
-		glUniform2f(getUniformLocation(name), uniform.x, uniform.y);
-	}
+		switch (uniformDataType)
+		{
+		case ShaderUniformDataType::SHADER_UNIFORM_FLOAT:
+			glUniform1f(getUniformLocation(name), (GLfloat)values[0]);
+			break;
 
-	void Shader::setUniform3f(const std::string& name, glm::vec3 uniform)
-	{
-		glUniform3f(getUniformLocation(name), uniform.x, uniform.y, uniform.z);
-	}
+		case ShaderUniformDataType::SHADER_UNIFORM_VEC2:
+			glUniform2f(getUniformLocation(name), (GLfloat)values[0], (GLfloat)values[1]);
+			break;
 
-	void Shader::setUniform4f(const std::string& name, glm::vec4 uniform)
-	{
-		glUniform4f(getUniformLocation(name), uniform.x, uniform.y, uniform.z, uniform.w);
-	}
+		case ShaderUniformDataType::SHADER_UNIFROM_VEC3:
+			glUniform3f(getUniformLocation(name), (GLfloat)values[0], (GLfloat)values[1], (GLfloat)values[2]);
+			break;
 
-	void Shader::setUniform1i(const std::string& name, int uniform)
-	{
-		glUniform1i(getUniformLocation(name), uniform);
-	}
+		case ShaderUniformDataType::SHADER_UNIFORM_VEC4:
+			glUniform4f(getUniformLocation(name), (GLfloat)values[0], (GLfloat)values[1], (GLfloat)values[2], (GLfloat)values[3]);
+			break;
 
-	void Shader::setUniform2i(const std::string& name, glm::ivec2 uniform)
-	{
-		glUniform2i(getUniformLocation(name), uniform.x, uniform.y);
-	}
+		case ShaderUniformDataType::SHADER_UNIFORM_INT:
+			glUniform1i(getUniformLocation(name), values[0]);
+			break;
 
-	void Shader::setUniform3i(const std::string& name, glm::ivec3 uniform)
-	{
-		glUniform3i(getUniformLocation(name), uniform.x, uniform.y, uniform.z);
-	}
+		case ShaderUniformDataType::SHADER_UNIFORM_IVEC2:
+			glUniform2i(getUniformLocation(name), values[0], values[1]);
+			break;
+			
+		case ShaderUniformDataType::SHADER_UNIFROM_IVEC3:
+			glUniform3i(getUniformLocation(name), values[0], values[1], values[2]);
+			break;
 
-	void Shader::setUniform4i(const std::string& name, glm::ivec4 uniform)
-	{
-		glUniform4i(getUniformLocation(name), uniform.x, uniform.y, uniform.z, uniform.w);
-	}
-
-	void Shader::setUniformMat3f(const std::string& name, const glm::mat3& uniform)
-	{
-		glUniformMatrix3fv(getUniformLocation(name), 1, GL_FALSE, &uniform[0][0]);
-	}
-
-	void Shader::setUniformMat4f(const std::string& name, const glm::mat4& uniform)
-	{
-		glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, &uniform[0][0]);
+		case ShaderUniformDataType::SHADER_UNIFORM_IVEC4:
+			glUniform4i(getUniformLocation(name), values[0], values[1], values[2], values[3]);
+			break;
+		};
 	}
 }
