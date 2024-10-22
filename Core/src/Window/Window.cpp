@@ -6,7 +6,7 @@ namespace Core::Window
 	{
 		m_WindowProperties.Height = WindowHeight;
 		m_WindowProperties.Width = WindowWidth;
-		m_WindowProperties.Scale = (float)WindowWidth / (float)WindowHeight;
+		m_WindowProperties.AspectRatio = (float)WindowWidth / (float)WindowHeight;
 		m_WindowProperties.Name = name;
 		m_WindowProperties.Vsync = vsync;
 
@@ -30,7 +30,7 @@ namespace Core::Window
 		if (m_GLFWWindow)
 		{
 			std::cout << GREEN_BACKGROUND << BLACK << std::format("GLFW Window Initialized\nName: {}\nWidth: {}\nHeight: {}\nScale: {}\nVsync: {}\n",
-				m_WindowProperties.Name, m_WindowProperties.Width, m_WindowProperties.Height, m_WindowProperties.Scale, m_WindowProperties.Vsync) << RESET;
+				m_WindowProperties.Name, m_WindowProperties.Width, m_WindowProperties.Height, m_WindowProperties.AspectRatio, m_WindowProperties.Vsync) << RESET;
 			glfwMakeContextCurrent(m_GLFWWindow);
 		}
 
@@ -49,7 +49,12 @@ namespace Core::Window
 
 	Window::~Window()
 	{
-		glfwTerminate();	
+		glfwTerminate();
+	}
+
+	const WindowProperties* Window::getWindowProperties() const
+	{
+		return &m_WindowProperties;
 	}
 
 	int windowShouldClose(const Window& window)

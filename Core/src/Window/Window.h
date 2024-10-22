@@ -20,11 +20,11 @@ namespace Core::Window
 		uint16_t Height;
 
 		bool Vsync;
-		float Scale;
+		float AspectRatio;
 		std::string Name;
 
-		WindowProperties(std::string const& name = "Default Window Handle", uint32_t windwoWidth = 720, uint32_t windowHeight = 480, bool vsync = true)
-			:Width(windwoWidth), Height(windowHeight), Vsync(vsync), Scale((float)windwoWidth / (float)windowHeight), Name(name) {}
+		WindowProperties(std::string const& name = "Default Window Handle", uint32_t windowWidth = 720, uint32_t windowHeight = 480, bool vsync = true)
+			:Width(windowWidth), Height(windowHeight), Vsync(vsync), AspectRatio((float)windowWidth / (float)windowHeight), Name(name) {}
 	};
 
 	class CORE_API Window
@@ -35,6 +35,7 @@ namespace Core::Window
 		~Window();
 
 		GLFWwindow* getGLFWwindow() const { return m_GLFWWindow; }
+		const WindowProperties* getWindowProperties() const;
 
 	private:
 		WindowProperties m_WindowProperties;
