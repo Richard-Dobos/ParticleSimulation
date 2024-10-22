@@ -3,47 +3,23 @@
 #include <filesystem>
 
 #include "Application.h"
-#include "Utils/Shader.h"
 #include "Utils/Timer.h"
-#include "Renderer/Renderer2d.h"
+#include "Utils/Shader.h"
+#include "Engine/Scene.h"
+#include "Window/Window.h"
+#include "Engine/Components/Components.h"
+
 
 namespace Core
 {
-    const int WINDOW_WIDTH = 1280;
-    const int WINDOW_HEIGHT = 720;
+    const uint16_t RESOLUTION[2] = { 1280, 720 };
 
     void Application::Update()
-    { 
-        if (!glfwInit())
-        {
-            std::cerr << "Failed to initialize GLFW" << std::endl;
-        }
+    {
+        Window::Window coreWindow(RESOLUTION[0], RESOLUTION[1], "Demo APP", true);
 
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_FALSE);
-        glfwSwapInterval(0);
-
-        GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-        const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-        GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Demo APP", NULL, NULL);
-
-        glViewport(0, 0, mode->width, mode->height);
-
-        if (!window) 
-        {
-            std::cerr << "Failed to create GLFW window" << std::endl;
-            glfwTerminate();
-        }
-
-        // Make the window's context current
-        glfwMakeContextCurrent(window);
-
-        if (glewInit() != GLEW_OK) {
-            std::cerr << "Failed to initialize GLEW" << std::endl;
-            glfwTerminate();
-        }
+        Window::setGLFWWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        Window::setGLFWWindowHint(GLFW_DOUBLEBUFFER, GLFW_FALSE);
 
         std::string vertShaderPath = findAssetFolder() + "\\DefaultShaders\\DefaultVertexShader.glsl";
         std::string fragShaderPath = findAssetFolder() + "\\DefaultShaders\\DefaultFragShader.glsl";
@@ -51,42 +27,29 @@ namespace Core
         Utils::Shader defaultShader(vertShaderPath.c_str(), fragShaderPath.c_str());
         defaultShader.bind();
 
-        Renderer::Renderer2d renderer;
+        Engine::Scene m_CurrentScene("Main Scene");
+        
+        //defaultShader.setUniformVector("u_Resolution", Utils::ShaderUniformDataType::SHADER_UNIFORM_VEC2, &RESOLUTION, 2);
+       
+        m_CurrentScene.createGameObject(Engine::Transform({ -1.0f, -1.0f }, { 2, 2 }), { 255, 255, 255, 255});
 
-        uint64_t frameCount = 0;
-
-        float time = 0;
-		auto start = std::chrono::steady_clock::now();
-
-        defaultShader.setUniform2f("Resolution", { WINDOW_WIDTH, WINDOW_HEIGHT });
-
-        // Main rendering loop
-        while (!glfwWindowShouldClose(window)) 
+        double mousePos[2];
+        
+        while(!Core::Window::windowShouldClose(coreWindow)) 
         {
-            Utils::Timer timer;
             glClear(GL_COLOR_BUFFER_BIT);
+          
+            glfwGetCursorPos(coreWindow.getGLFWwindow(), &mousePos[0], &mousePos[1]);
 
-            defaultShader.setUniform1f("Time", glfwGetTime());
+            float time = (float)glfwGetTime();
+            
+            m_CurrentScene.updateScene();
 
-			renderer.beginBatch();
-            renderer.DrawQuad({ -1.0f, -1.0f, 1.0f }, { 2, 2 }, 255, 255, 255, 255);
-            renderer.endBatch();
-            
-            frameCount++;
-            
-            glfwSwapBuffers(window);
+            glfwSwapBuffers(coreWindow.getGLFWwindow());
 
             glFlush();
             glfwPollEvents();
         }
-
-        auto end = std::chrono::steady_clock::now();
-        auto timeTaken = std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
-        float AVG =  frameCount / timeTaken;
-
-        std::cout << GREEN_BACKGROUND << BLACK << std::format("\nAverage FPS: {}\nAverage Frame Time: {}ms", AVG, timeTaken * 1000.0f / frameCount) << RESET;
-      
-        glfwTerminate();
     }
 
     std::string Application::findAssetFolder() const
@@ -109,7 +72,6 @@ namespace Core
         }
 
         assetPath += "\\Assets";
-
 
         if (foundFolder) 
         {

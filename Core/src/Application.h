@@ -3,9 +3,6 @@
 
 #include "Core.h"
 
-#include "glew.h"
-#include "glfw3.h"
-
 namespace Core
 {
 	class CORE_API Application
@@ -14,7 +11,11 @@ namespace Core
 		Application() = default;
 
 		void Update();
+		void OnBegin();
+
 	private:
+		void Runtime();
+		
 		std::string findAssetFolder() const;
 	};
 }
