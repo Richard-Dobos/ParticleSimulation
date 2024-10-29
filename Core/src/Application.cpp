@@ -1,6 +1,6 @@
 #include <format>
-#include <chrono>
 #include <filesystem>
+#include <vector>
 
 #include "Application.h"
 #include "Utils/Timer.h"
@@ -29,29 +29,61 @@ namespace Core
         defaultShader.bind();
 
         Engine::Scene m_CurrentScene("Main Scene");
-        Engine::Camera2d mainCamera(Engine::Transform({ 0.0f, 0.0f, 1.0f }), RESOLUTION[0], RESOLUTION[1], coreWindow.getWindowProperties()->AspectRatio, 0.0f, 10.0f);
+        Engine::Camera2d mainCamera(Engine::Transform({ 0.0f, 0.0f, 0.0f }), RESOLUTION[0], RESOLUTION[1], coreWindow.getWindowProperties()->AspectRatio, -1.0f, 1.0f);
 
-        //defaultShader.setUniformVector("u_Resolution", Utils::ShaderUniformDataType::SHADER_UNIFORM_VEC2, &RESOLUTION, 2);
-        m_CurrentScene.createGameObject(Engine::Transform({ 0.0f, 0.0f, 0.0f }, { 720.0f, 720.0f, 0.0f }, 0.0f), { 255, 255, 255, 255});
-       
+        m_CurrentScene.createMainCamera(mainCamera);
+
+        m_CurrentScene.addShader(defaultShader);
+        m_CurrentScene.m_ActiveShaderID = defaultShader.getShaderProgramID();
+        
+        float squareWidth = 1.0f;
+        float squareHeight = 1.0f;
+
+		m_CurrentScene.m_Ecs.RegisterComponent<Engine::Transform>();
+		m_CurrentScene.m_Ecs.RegisterComponent<Engine::Color>();
+        m_CurrentScene.m_Ecs.RegisterComponent<Engine::Render>();
+
+        for (uint16_t x = 0; x < 1280; x++)
+        {
+            for (uint16_t y = 0; y < 720; y++)
+            {
+                uint8_t r = static_cast<uint8_t>(std::rand() % 256);
+                uint8_t g = static_cast<uint8_t>(std::rand() % 256);
+                uint8_t b = static_cast<uint8_t>(std::rand() % 256);
+
+                Core::Engine::EntityID et = m_CurrentScene.createEntity();
+
+                m_CurrentScene.m_Ecs.Add<Engine::Transform>(et, Engine::Transform{ { x * squareWidth, y * squareHeight, 0 }, { squareWidth, squareHeight, 0 }, 0.0f });
+				m_CurrentScene.m_Ecs.Add<Engine::Color>(et, Engine::Color{ r, g, b, 255 });
+				m_CurrentScene.m_Ecs.Add<Engine::Render>(et, Engine::Render{});
+            }
+        }
+
         defaultShader.setUniformMat4x4("u_View", mainCamera.getViewMatrix());
         defaultShader.setUniformMat4x4("u_Proj", mainCamera.getProjectionMatrix());
 
         double mousePos[2];
         
-        while(!Core::Window::windowShouldClose(coreWindow)) 
         {
-            glClear(GL_COLOR_BUFFER_BIT);
-          
-            glfwGetCursorPos(coreWindow.getGLFWwindow(), &mousePos[0], &mousePos[1]);
+            Utils::Timer timer;
+            
+            while (!Core::Window::windowShouldClose(coreWindow))
+            {
+                timer.startTimerPeriod();
+                glClear(GL_COLOR_BUFFER_BIT);
 
-            m_CurrentScene.updateScene();
+                glfwGetCursorPos(coreWindow.getGLFWwindow(), &mousePos[0], &mousePos[1]);
 
-            glfwSwapBuffers(coreWindow.getGLFWwindow());
+                m_CurrentScene.updateScene();
 
-            glFlush();
-            glfwPollEvents();
+                glfwSwapBuffers(coreWindow.getGLFWwindow());
+
+                glFlush();
+                glfwPollEvents();
+                timer.endTimerPeriod();
+            }
         }
+
     }
 
     std::string Application::findAssetFolder() const

@@ -4,12 +4,22 @@
 
 namespace Core::Engine
 {
+	struct Render
+	{
+
+	};
+
 	struct Transform
 	{
 		glm::vec3 pos, scale;
 		float rotation;
 	};
 	
+	struct Velocity
+	{
+		glm::vec3 vel;
+	};
+
 	struct Color
 	{
 		uint8_t r, g, b, a;

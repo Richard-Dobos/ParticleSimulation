@@ -5,17 +5,32 @@
 
 namespace Core::Engine
 {
-	void Scene::createGameObject(const Transform& transform, const Color& color)
+	/*
+	EntityID Scene::createEntity()
 	{
+		EntityID entity = m_Ecs.CreateEntity();
+
+		m_EntityList.push_back(entity);
+
 		uint64_t UID = Utils::xorshf96();
 		
 		while (m_GameObjects.contains(UID))
 			UID = Utils::xorshf96();
 
-		m_GameObjects[UID];
-		m_GameObjects[UID].UID = UID;
-		m_GameObjectsTransforms[UID] = transform;
-		m_GameObjectsColors[UID] = color;
+		//m_GameObjects[UID];
+		//m_GameObjects[UID].UID = UID;
+		//m_GameObjectsTransforms[UID] = transform;
+		//m_GameObjectsColors[UID] = color;
+	}
+
+	void Scene::deleteEntity(EntityID entity)
+	{
+		//m_Ecs.DeleteEntity(entity);
+	}
+	*/
+	void Scene::createMainCamera(Camera2d& camera)
+	{
+		m_MainCamera = &camera;
 	}
 
 	void Scene::updateScene()
@@ -27,16 +42,34 @@ namespace Core::Engine
 	{
 		m_Renderer.beginBatch();
 
-		for (const auto& gameObject : m_GameObjects)
+		//m_Ecs.ForEach<Render>([&](EntityID id, Render& render)
+		//{
+		//	const Transform* tf = &m_Ecs.Get<Transform>(id);
+		//	const Color* cl = &m_Ecs.Get<Color>(id);
+		//
+		//	m_Renderer.DrawQuad(*tf, *cl);
+		//});
+
+		/*for (const auto& gameObject : m_GameObjects)
 		{
 			const Transform* tf = &m_GameObjectsTransforms[gameObject.first];
 			const Color* cl = &m_GameObjectsColors[gameObject.first];
-			const glm::mat4 model = glm::translate(glm::mat4(1.0f), tf->pos);	
 
-			m_Renderer.DrawQuad({ tf->pos.x, tf->pos.y, 1.0f }, tf->scale, cl->r, cl->g, cl->b, cl->a);
-
-		}
+			m_Renderer.DrawQuad(*tf, *cl);
+		}*/
 
 		m_Renderer.endBatch();
+	}	
+
+	void Scene::addShader(Core::Utils::Shader& shader)
+	{
+		m_Shaders[shader.getShaderProgramID()] = &shader;
+	}
+
+	const uint32_t Scene::getSizeB() const
+	{
+		uint32_t size = 0;
+
+		return size;
 	}
 }
