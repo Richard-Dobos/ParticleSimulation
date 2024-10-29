@@ -19,7 +19,7 @@ namespace Core::Engine
 
 	const glm::mat4 Camera2d::getProjectionMatrix() const
 	{
-		return glm::ortho(0.0f, m_CameraProperties.resolutionWidth / m_Transform.scale.x, m_CameraProperties.resolutionHeight / m_Transform.scale.y, 0.0f, m_CameraProperties.nearClip, m_CameraProperties.farClip);
+		return glm::ortho(0.0f, (float)m_CameraProperties.resolutionWidth, (float)m_CameraProperties.resolutionHeight, 0.0f, m_CameraProperties.nearClip, m_CameraProperties.farClip);
 	}
 
 	const CameraProperties* Camera2d::getCameraProperties() const

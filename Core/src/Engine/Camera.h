@@ -2,6 +2,7 @@
 
 #include "Core.h"
 #include "glm.hpp"
+#include "glfw3.h"
 #include "gtc/matrix_transform.hpp"
 #include "Components/Components.h"
 
@@ -11,7 +12,6 @@ namespace Core::Engine
 	{
 		uint16_t resolutionHeight, resolutionWidth;
 		
-		float FOV;
 		float aspectRatio;
 		float nearClip, farClip;
 	};
@@ -27,7 +27,7 @@ namespace Core::Engine
 		const glm::mat4 getProjectionMatrix() const;
 
 		const CameraProperties* getCameraProperties() const;
-		
+
 	public:
 		Transform m_Transform;
 
