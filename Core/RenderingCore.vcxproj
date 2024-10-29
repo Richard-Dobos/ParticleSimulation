@@ -164,6 +164,9 @@ xcopy /y /d "$(SolutionDir)\$(ProjectName)\vendors\\GLEW\lib\glew32.dll" "$(OutD
   <ItemGroup>
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\Engine\Camera.cpp" />
+    <ClCompile Include="src\Engine\EntityComponentSystem.h" />
+    <ClCompile Include="src\Engine\ECS.cpp" />
+    <ClCompile Include="src\Engine\ECS.h" />
     <ClCompile Include="src\Engine\Scene.cpp" />
     <ClCompile Include="src\Renderer\Renderer2d.cpp" />
     <ClCompile Include="src\Renderer\VertexArray.cpp" />
@@ -183,6 +186,7 @@ xcopy /y /d "$(SolutionDir)\$(ProjectName)\vendors\\GLEW\lib\glew32.dll" "$(OutD
     <ClInclude Include="src\Renderer\VertexArray.h" />
     <ClInclude Include="src\Renderer\Buffer.h" />
     <ClInclude Include="src\Utils\Shader.h" />
+    <ClInclude Include="src\Utils\SparseSet.h" />
     <ClInclude Include="src\Utils\Timer.h" />
     <ClInclude Include="src\Window\Window.h" />
     <ClInclude Include="vendors\GLEW\include\eglew.h" />

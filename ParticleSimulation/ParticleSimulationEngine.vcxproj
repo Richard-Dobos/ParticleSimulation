@@ -141,7 +141,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)$(Platform)\bin\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Core.lib;glew32.lib;glfw3.lib;opengl32.lib</AdditionalDependencies>
+      <AdditionalDependencies>Core.lib;</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

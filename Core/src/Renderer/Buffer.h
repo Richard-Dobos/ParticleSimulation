@@ -31,6 +31,7 @@ namespace Core::Renderer
 		case ShaderDataType::uInt4:		return GL_UNSIGNED_INT;
 		case ShaderDataType::Mat3:		return GL_FLOAT;
 		case ShaderDataType::Mat4:		return GL_FLOAT;
+		default:						return 0;
 		}
 	}
 
@@ -52,6 +53,7 @@ namespace Core::Renderer
 		case ShaderDataType::uInt4:		return 4 * 4;
 		case ShaderDataType::Mat3:		return 4 * 9;
 		case ShaderDataType::Mat4:		return 4 * 16;
+		default:						return 0;
 		}
 	}
 	
@@ -86,6 +88,7 @@ namespace Core::Renderer
 			case ShaderDataType::uInt4:		return 4;
 			case ShaderDataType::Mat3:		return 9;
 			case ShaderDataType::Mat4:		return 16;
+			default:						return 0;
 			}
 		}
 	};
@@ -116,7 +119,7 @@ namespace Core::Renderer
 
 	private:
 		std::vector<BufferElement> m_BufferElements;
-		uint32_t m_Stride;
+		uint32_t m_Stride = 0;
 	};
 
 	class VertexBuffer

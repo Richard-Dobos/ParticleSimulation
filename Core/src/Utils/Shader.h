@@ -39,6 +39,7 @@ namespace Core::Utils
 		void setUniformVector(const std::string& name, ShaderUniformDataType uniformDataType, const void* value, uint32_t count);
 		void setUniformMat4x4(const std::string& name, const glm::mat4& matrix);
 
+		uint32_t getShaderProgramID() const;
 	private:
 		GLint getUniformLocation(const std::string& name);
 

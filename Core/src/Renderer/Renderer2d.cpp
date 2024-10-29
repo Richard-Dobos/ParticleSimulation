@@ -1,16 +1,18 @@
 #include "Renderer2d.h"
 
+#include "gtc/matrix_transform.hpp"
+
 namespace Core::Renderer
 {
 	struct Vertex
 	{
-		glm::vec3 Pos;
+		glm::vec3 Pos;	
 		uint32_t Color;
 	};
 
 	struct RendererStorage
 	{
-		const uint32_t QuadBatchSize = 100000;
+		const uint32_t QuadBatchSize = 50000;
 		const uint32_t VertexCountPerBatch = QuadBatchSize * 4;
 		const uint32_t IndexCountPerBatch = QuadBatchSize * 6;
 
@@ -26,7 +28,7 @@ namespace Core::Renderer
 
 	Renderer2d::Renderer2d()
 	{
-		BufferLayout layout =
+		m_BufferLayout =
 		{
 			{"Pos", ShaderDataType::Float3, false},
 			{"Color", ShaderDataType::Float1, false}
@@ -37,7 +39,7 @@ namespace Core::Renderer
 
 		s_Data.QuadVertexBasePtr = new Vertex[s_Data.VertexCountPerBatch * sizeof(Vertex)];
 
-		s_Data.QuadVertexBuffer->setBufferLayout(layout);
+		s_Data.QuadVertexBuffer->setBufferLayout(m_BufferLayout);
 		s_Data.QuadVertexArray->addVertexBuffer(s_Data.QuadVertexBuffer);
 		
 		uint32_t* quadIndecies = new uint32_t[s_Data.IndexCountPerBatch];
@@ -58,6 +60,7 @@ namespace Core::Renderer
 
 		auto QuadIBO = std::make_shared<IndexBuffer>(quadIndecies, s_Data.IndexCountPerBatch);
 		s_Data.QuadVertexArray->setIndexBuffer(QuadIBO);
+
 		delete[] quadIndecies;
 	}
 
@@ -78,26 +81,32 @@ namespace Core::Renderer
 		s_Data.IndexCount = 0;
 	}
 
-	void Renderer2d::DrawQuad(const glm::vec3& position, const glm::vec2& size, uint8_t r, uint8_t g, uint8_t b, uint8_t a) const
+	void Renderer2d::DrawQuad(const Engine::Transform& transform, const Engine::Color& color)
 	{
+		if (s_Data.IndexCount >= s_Data.IndexCountPerBatch)
+		{
+			endBatch();
+			beginBatch();
+		}		
+
 		// Bottom Left Corner Vertex
-		s_Data.QuadVertexPtr->Pos = position;
-		s_Data.QuadVertexPtr->Color = r << 24 | g << 16 | b << 8 | a;
+		s_Data.QuadVertexPtr->Pos = transform.pos;
+		s_Data.QuadVertexPtr->Color = color.r << 24 | color.g << 16 | color.b << 8 | color.a;
 		s_Data.QuadVertexPtr++;
 
 		// Bottom Right Corner Vertex
-		s_Data.QuadVertexPtr->Pos = { position.x + size.x, position.y, 1.0f };
-		s_Data.QuadVertexPtr->Color = r << 24 | g << 16 | b << 8 | a;
+		s_Data.QuadVertexPtr->Pos = { transform.pos.x + transform.scale.x, transform.pos.y, transform.scale.z };
+		s_Data.QuadVertexPtr->Color = color.r << 24 | color.g << 16 | color.b << 8 | color.a;
 		s_Data.QuadVertexPtr++;
 
 		// Top Right Corner Vertex
-		s_Data.QuadVertexPtr->Pos = { position.x + size.x, position.y + size.y, 1.0f };
-		s_Data.QuadVertexPtr->Color = r << 24 | g << 16 | b << 8 | a;
+		s_Data.QuadVertexPtr->Pos = { transform.pos.x + transform.scale.x, transform.pos.y + transform.scale.y, transform.pos.z };
+		s_Data.QuadVertexPtr->Color = color.r << 24 | color.g << 16 | color.b << 8 | color.a;
 		s_Data.QuadVertexPtr++;
 
 		//Top Left Corner Vertex
-		s_Data.QuadVertexPtr->Pos = { position.x, position.y + size.y, 1.0f };
-		s_Data.QuadVertexPtr->Color = r << 24 | g << 16 | b << 8 | a;
+		s_Data.QuadVertexPtr->Pos = { transform.pos.x, transform.pos.y + transform.scale.y, transform.pos.z };
+		s_Data.QuadVertexPtr->Color = color.r << 24 | color.g << 16 | color.b << 8 | color.a;
 		s_Data.QuadVertexPtr++;
 
 		s_Data.IndexCount += 6;
@@ -108,6 +117,7 @@ namespace Core::Renderer
 		uint32_t size = (uint8_t*)s_Data.QuadVertexPtr - (uint8_t*)s_Data.QuadVertexBasePtr;
 
 		s_Data.QuadVertexBuffer->setData(s_Data.QuadVertexBasePtr, size);
+
 		glDrawElements(GL_TRIANGLES, s_Data.IndexCount, GL_UNSIGNED_INT, NULL);
 	}
 }

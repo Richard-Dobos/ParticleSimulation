@@ -200,4 +200,9 @@ namespace Core::Utils
 	{
 		glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, &matrix[0][0]);
 	}
+
+	uint32_t Shader::getShaderProgramID() const
+	{
+		return m_ShaderProgramID;
+	}
 }
