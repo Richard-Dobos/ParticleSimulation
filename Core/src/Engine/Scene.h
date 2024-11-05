@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <vector>
+#include <string>
 #include <unordered_map>
 
 #include "Core.h"
@@ -19,7 +20,7 @@ namespace Core::Engine
 	class CORE_API Scene
 	{
 	public:
-		Scene(const char* sceneName)
+		Scene(std::string sceneName)
 			:m_SceneName(sceneName) {}
 		~Scene() = default;
 
@@ -42,18 +43,12 @@ namespace Core::Engine
 		inline void sceneRenderPass();
 		
 	private:
-		const char* m_SceneName;
+		std::string m_SceneName;
 
 		Renderer::Renderer2d m_Renderer;
 		Engine::Camera2d* m_MainCamera;
 
 		std::vector<EntityID> m_EntityList;
 		std::unordered_map<uint32_t, Core::Utils::Shader*> m_Shaders;
-		
-		/*
-		std::unordered_map<uint64_t, GameObject> m_GameObjects;
-		std::unordered_map<uint64_t, Transform> m_GameObjectsTransforms;
-		std::unordered_map<uint64_t, Color> m_GameObjectsColors;
-		*/
 	};
 }

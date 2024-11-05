@@ -1,15 +1,11 @@
 #pragma once
 
-#include <vector>
-#include <unordered_map>
-#include <limits>
-#include <cstdint>
 #include <iostream>
-#include <sstream>
-#include <memory>
-#include <algorithm>
+#include <vector>
 #include <bitset>
-#include <type_traits>
+#include <unordered_map>
+#include <memory>
+#include <sstream>
 
 #ifndef ECS_ASSERTS
 #define ECS_ASSERT(condition, msg) \
@@ -37,6 +33,7 @@
 #endif
 #endif
 
+
 namespace Core::Engine 
 {
 	using EntityID = uint64_t;
@@ -52,6 +49,7 @@ namespace Core::Engine
 	{
 	public:
 		virtual ~ISparseSet() = default;
+
 		virtual void Delete(EntityID) = 0;
 		virtual void Clear() = 0;
 		virtual size_t Size() = 0;
@@ -62,6 +60,7 @@ namespace Core::Engine
 	{
 	public:
 		SparseSet() { m_dense.reserve(200); }
+		~SparseSet() = default;
 
 		T* Set(EntityID id, T obj) 
 		{
@@ -159,8 +158,10 @@ namespace Core::Engine
 			size_t page = id / SPARSE_MAX_SIZE;
 			size_t sparseIndex = id % SPARSE_MAX_SIZE;
 
-			if (page < m_sparsePages.size()) {
+			if (page < m_sparsePages.size()) 
+			{
 				Sparse& sparse = m_sparsePages[page];
+
 				if (sparseIndex < sparse.size())
 					return sparse[sparseIndex];
 			}
@@ -183,7 +184,10 @@ namespace Core::Engine
 	{
 	public:
 		ECS() = default;
-		~ECS() = default;
+		~ECS()
+		{
+			delete m_componentPools;
+		}
 
 		/*
 		*  Creates an entity and returns the ID to refer to that entity.
@@ -260,7 +264,7 @@ namespace Core::Engine
 			{
 				if (mask[i] == 1)
 				{
-					m_componentPools[i]->Delete(id);
+					(*m_componentPools)[i]->Delete(id);
 				}
 			}
 
@@ -282,11 +286,13 @@ namespace Core::Engine
 
 			ECS_ASSERT(m_componentBitPosition.find(name) == m_componentBitPosition.end(),
 						"Component with name '" << name << "' already registered");
-			ECS_ASSERT(m_componentPools.size() < MAX_COMPONENTS,
+			ECS_ASSERT(m_componentPools->size() < MAX_COMPONENTS,
 						"Exceeded max number of registered components");
 
-			m_componentBitPosition.emplace(name, m_componentPools.size());
-			m_componentPools.push_back(std::make_unique<SparseSet<T>>());
+			//m_componentBitPosition.emplace(name, m_componentPools.size());
+			m_componentBitPosition[name] = m_componentPools->size();
+			m_componentPools->push_back(std::make_unique<SparseSet<T>>());
+			//m_componentPools.push_back(std::make_unique<SparseSet<T>>());
 
 			ECS_INFO("Registered component '" << name << "'");
 		}
@@ -395,7 +401,7 @@ namespace Core::Engine
 			std::vector<EntityID> result;
 			ComponentMask targetMask = GetMask<Components...>();
 
-			for (auto& [mask, ids] : m_groupings) 
+			for (auto& [mask, ids] : m_Groupings) 
 			{
 				if ((mask & targetMask) == targetMask)
 				{
@@ -420,7 +426,7 @@ namespace Core::Engine
 			std::vector<std::tuple<EntityID, Components&...>> result;
 			ComponentMask targetMask = GetMask<Components...>();
 
-			for (auto& [mask, ids] : m_groupings) 
+			for (auto& [mask, ids] : m_Groupings) 
 			{
 				if ((mask & targetMask) == targetMask) 
 				{
@@ -451,7 +457,7 @@ namespace Core::Engine
 
 			std::vector<SparseSet<EntityID>> groups;
 
-			for (auto& [mask, ids] : m_groupings) 
+			for (auto& [mask, ids] : m_Groupings) 
 			{
 				// collect group if mask is a subset of targetMask 
 				if ((mask & targetMask) == targetMask) 
@@ -499,7 +505,7 @@ namespace Core::Engine
 		{
 			std::stringstream ss;
 
-			for (auto& [mask, sparse] : m_groupings) 
+			for (auto& [mask, sparse] : m_Groupings) 
 			{
 				// Create string for grouping
 				bool findingFirstBit = true;
@@ -558,7 +564,7 @@ namespace Core::Engine
 			std::stringstream ss;
 			std::string delim = "";
 
-			for (auto& [_, ids] : m_groupings) 
+			for (auto& [_, ids] : m_Groupings) 
 			{
 				for (EntityID id : ids.Data()) 
 				{
@@ -630,11 +636,11 @@ namespace Core::Engine
 					"Attempting to operate on unregistered component '" << typeid(T).name() << "'");
 			}
 
-			ECS_ASSERT(bitPos < m_componentPools.size() && bitPos >= 0,
+			ECS_ASSERT(bitPos < m_componentPools->size() && bitPos >= 0,
 				"(Internal): Attempting to index into m_componentPools with out of range bit position");
 
 			// Downcast the generic pointer to the specific sparse set
-			ISparseSet* genericPtr = m_componentPools[bitPos].get();
+			ISparseSet* genericPtr = (*m_componentPools)[bitPos].get();
 			SparseSet<T>* pool = static_cast<SparseSet<T>*>(genericPtr);
 
 			return *pool;
@@ -691,7 +697,7 @@ namespace Core::Engine
 			// Delete grouping if it's empty
 			if (group.IsEmpty())
 			{
-				m_groupings.erase(mask);
+				m_Groupings.erase(mask);
 			}
 		}
 
@@ -701,15 +707,15 @@ namespace Core::Engine
 			if (mask.none()) return;
 
 			// Create group if it doesn't exist
-			m_groupings.emplace(std::piecewise_construct, std::forward_as_tuple(mask), std::forward_as_tuple()); // Empty sparse set
-			m_groupings[mask].Set(id, id);
+			m_Groupings.emplace(std::piecewise_construct, std::forward_as_tuple(mask), std::forward_as_tuple()); // Empty sparse set
+			m_Groupings[mask].Set(id, id);
 		}
 
 		SparseSet<EntityID>& GetGroupedEntities(ComponentMask& mask) 
 		{
-			auto found = m_groupings.find(mask);
+			auto found = m_Groupings.find(mask);
 
-			ECS_ASSERT(found != m_groupings.end(), "Cannot find group for entities with mask " << mask);
+			ECS_ASSERT(found != m_Groupings.end(), "Cannot find group for entities with mask " << mask);
 
 			return found->second;
 		}
@@ -726,7 +732,7 @@ namespace Core::Engine
 		// Groups entities that share a component mask.
 		// A, B, C: [1, 2, 3]
 		// B: [4]
-		std::unordered_map<ComponentMask, SparseSet<EntityID>> m_groupings;
+		std::unordered_map<ComponentMask, SparseSet<EntityID>> m_Groupings;
 
 		// Associates ID with name provided in CreateEntity(), mainly for debugging
 		std::unordered_map<EntityID, std::string> m_entityNames;
@@ -735,7 +741,9 @@ namespace Core::Engine
 		// 
 		// Index into this array using the corresponding bit position
 		// found by using m_componentBitPosition
-		std::vector<std::unique_ptr<ISparseSet>> m_componentPools;
+
+		// Line 742 causes compiler error c2672 std::construct_at: no matching overloaded function found
+		std::vector<std::unique_ptr<ISparseSet>>* m_componentPools = new std::vector<std::unique_ptr<ISparseSet>>;
 
 		// Key is component name, value is the bit position in ComponentMask
 		std::unordered_map<TypeName, size_t> m_componentBitPosition;

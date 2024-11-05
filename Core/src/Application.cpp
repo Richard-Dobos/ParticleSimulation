@@ -1,6 +1,7 @@
 #include <format>
-#include <filesystem>
+#include <memory>
 #include <vector>
+#include <filesystem>
 
 #include "Application.h"
 #include "Utils/Timer.h"
@@ -10,14 +11,13 @@
 #include "Engine/Camera.h"
 #include "Engine/Components/Components.h"
 
-
 namespace Core
 {
     const uint16_t RESOLUTION[2] = { 1280, 720 };
 
     void Application::Update()
     {
-        Window::Window coreWindow(RESOLUTION[0], RESOLUTION[1], "Demo APP", true);
+        Window::Window coreWindow(RESOLUTION[0], RESOLUTION[1], "Demo APP", false);
 
         Window::setGLFWWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         Window::setGLFWWindowHint(GLFW_DOUBLEBUFFER, GLFW_FALSE);
@@ -41,12 +41,12 @@ namespace Core
 
 		m_CurrentScene.m_Ecs.RegisterComponent<Engine::Transform>();
 		m_CurrentScene.m_Ecs.RegisterComponent<Engine::Color>();
-        m_CurrentScene.m_Ecs.RegisterComponent<Engine::Render>();
+		m_CurrentScene.m_Ecs.RegisterComponent<Engine::Render>();
 
-        for (uint16_t x = 0; x < 1280; x++)
+        for (uint16_t x = 0; x < 2; x++)
         {
-            for (uint16_t y = 0; y < 720; y++)
-            {
+            for (uint16_t y = 0; y < 2; y++)
+            {   
                 uint8_t r = static_cast<uint8_t>(std::rand() % 256);
                 uint8_t g = static_cast<uint8_t>(std::rand() % 256);
                 uint8_t b = static_cast<uint8_t>(std::rand() % 256);
@@ -55,7 +55,7 @@ namespace Core
 
                 m_CurrentScene.m_Ecs.Add<Engine::Transform>(et, Engine::Transform{ { x * squareWidth, y * squareHeight, 0 }, { squareWidth, squareHeight, 0 }, 0.0f });
 				m_CurrentScene.m_Ecs.Add<Engine::Color>(et, Engine::Color{ r, g, b, 255 });
-				m_CurrentScene.m_Ecs.Add<Engine::Render>(et, Engine::Render{});
+                m_CurrentScene.m_Ecs.Add<Engine::Render>(et, Engine::Render{});
             }
         }
 

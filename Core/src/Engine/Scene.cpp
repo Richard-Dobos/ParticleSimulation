@@ -5,29 +5,19 @@
 
 namespace Core::Engine
 {
-	/*
 	EntityID Scene::createEntity()
 	{
 		EntityID entity = m_Ecs.CreateEntity();
 
 		m_EntityList.push_back(entity);
 
-		uint64_t UID = Utils::xorshf96();
-		
-		while (m_GameObjects.contains(UID))
-			UID = Utils::xorshf96();
-
-		//m_GameObjects[UID];
-		//m_GameObjects[UID].UID = UID;
-		//m_GameObjectsTransforms[UID] = transform;
-		//m_GameObjectsColors[UID] = color;
+		return entity;
 	}
 
 	void Scene::deleteEntity(EntityID entity)
 	{
 		//m_Ecs.DeleteEntity(entity);
 	}
-	*/
 	void Scene::createMainCamera(Camera2d& camera)
 	{
 		m_MainCamera = &camera;
@@ -42,13 +32,13 @@ namespace Core::Engine
 	{
 		m_Renderer.beginBatch();
 
-		//m_Ecs.ForEach<Render>([&](EntityID id, Render& render)
-		//{
-		//	const Transform* tf = &m_Ecs.Get<Transform>(id);
-		//	const Color* cl = &m_Ecs.Get<Color>(id);
-		//
-		//	m_Renderer.DrawQuad(*tf, *cl);
-		//});
+		m_Ecs.ForEach<Render>([&](EntityID id, Render& render)
+		{
+			const Transform* tf = &m_Ecs.Get<Transform>(id);
+			const Color* cl = &m_Ecs.Get<Color>(id);
+		
+			m_Renderer.DrawQuad(*tf, *cl);
+		});
 
 		/*for (const auto& gameObject : m_GameObjects)
 		{
