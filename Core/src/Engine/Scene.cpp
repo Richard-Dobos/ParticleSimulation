@@ -16,9 +16,9 @@ namespace Core::Engine
 
 	void Scene::deleteEntity(EntityID entity)
 	{
-		//m_Ecs.DeleteEntity(entity);
+		m_Ecs.DeleteEntity(entity);
 	}
-	void Scene::createMainCamera(Camera2d& camera)
+	void Scene::switchMainCamera(Camera2d& camera)
 	{
 		m_MainCamera = &camera;
 	}
@@ -31,27 +31,23 @@ namespace Core::Engine
 	inline void Scene::sceneRenderPass()
 	{
 		m_Renderer.beginBatch();
-
-		m_Ecs.ForEach<Render>([&](EntityID id, Render& render)
-		{
-			const Transform* tf = &m_Ecs.Get<Transform>(id);
-			const Color* cl = &m_Ecs.Get<Color>(id);
 		
-			m_Renderer.DrawQuad(*tf, *cl);
+		std::vector<uint8_t> renderingData;
+
+		uint32_t quadsToDraw = 0;
+	
+		m_Ecs.ForEach<Transform, Color>([&](Transform transform, Color color)
+		{
+			m_Renderer.DrawQuad(transform, color);
+			quadsToDraw++;
 		});
 
-		/*for (const auto& gameObject : m_GameObjects)
-		{
-			const Transform* tf = &m_GameObjectsTransforms[gameObject.first];
-			const Color* cl = &m_GameObjectsColors[gameObject.first];
-
-			m_Renderer.DrawQuad(*tf, *cl);
-		}*/
-
 		m_Renderer.endBatch();
+
+		m_Renderer.drawCalls = 0;
 	}	
 
-	void Scene::addShader(Core::Utils::Shader& shader)
+	void Scene::addShader(Utils::Shader& shader)
 	{
 		m_Shaders[shader.getShaderProgramID()] = &shader;
 	}
@@ -61,5 +57,10 @@ namespace Core::Engine
 		uint32_t size = 0;
 
 		return size;
+	}
+
+	uint32_t Scene::getEntityCount() const
+	{
+		return m_EntityList.size();
 	}
 }

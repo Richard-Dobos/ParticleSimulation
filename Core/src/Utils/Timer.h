@@ -37,7 +37,7 @@ namespace Core::Utils
 			m_StartPeriod = std::chrono::high_resolution_clock::now();
         }
 
-        void endTimerPeriod()
+        double endTimerPeriod()
         {
             m_EndPeriod = std::chrono::high_resolution_clock::now();
 
@@ -49,6 +49,8 @@ namespace Core::Utils
 			m_FrameCount += 1;
 
             std::cout << CYAN_BACKGROUND << BLACK << "\rFrameTime: " << duration << "ms" << " || FPS: " << 1000 / duration << RESET;
+
+            return duration;
         }
 
     private:

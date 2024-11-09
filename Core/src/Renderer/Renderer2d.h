@@ -27,6 +27,19 @@ namespace Core::Renderer
 
 		void DrawQuad(const Engine::Transform& transform, const Engine::Color& color);
 
+	public:
+		uint16_t drawCalls = 0;
+
+	private:
+		BufferLayout m_BufferLayout;
+	};
+
+	class CORE_API InstancedRenderer2d
+	{
+	public:
+		InstancedRenderer2d();
+		~InstancedRenderer2d();
+
 	private:
 		BufferLayout m_BufferLayout;
 	};

@@ -9,6 +9,11 @@ namespace Core::Engine
 
 	};
 
+	struct Shader
+	{
+		
+	};
+
 	struct Transform
 	{
 		glm::vec3 pos, scale;

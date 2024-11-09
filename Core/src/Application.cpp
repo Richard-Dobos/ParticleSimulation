@@ -19,6 +19,8 @@ namespace Core
     {
         Window::Window coreWindow(RESOLUTION[0], RESOLUTION[1], "Demo APP", false);
 
+		coreWindow.setEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
+
         Window::setGLFWWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         Window::setGLFWWindowHint(GLFW_DOUBLEBUFFER, GLFW_FALSE);
 
@@ -31,21 +33,23 @@ namespace Core
         Engine::Scene m_CurrentScene("Main Scene");
         Engine::Camera2d mainCamera(Engine::Transform({ 0.0f, 0.0f, 0.0f }), RESOLUTION[0], RESOLUTION[1], coreWindow.getWindowProperties()->AspectRatio, -1.0f, 1.0f);
 
-        m_CurrentScene.createMainCamera(mainCamera);
+        m_CurrentScene.switchMainCamera(mainCamera);
 
         m_CurrentScene.addShader(defaultShader);
         m_CurrentScene.m_ActiveShaderID = defaultShader.getShaderProgramID();
         
-        float squareWidth = 1.0f;
-        float squareHeight = 1.0f;
+        float squareWidth = 10;
+        float squareHeight = 10;
+
+        float divider = 10;
 
 		m_CurrentScene.m_Ecs.RegisterComponent<Engine::Transform>();
 		m_CurrentScene.m_Ecs.RegisterComponent<Engine::Color>();
 		m_CurrentScene.m_Ecs.RegisterComponent<Engine::Render>();
 
-        for (uint16_t x = 0; x < 2; x++)
+        for (uint16_t x = 0; x < coreWindow.getWindowProperties()->Width / divider; x++)
         {
-            for (uint16_t y = 0; y < 2; y++)
+            for (uint16_t y = 0; y < coreWindow.getWindowProperties()->Height / divider; y++)
             {   
                 uint8_t r = static_cast<uint8_t>(std::rand() % 256);
                 uint8_t g = static_cast<uint8_t>(std::rand() % 256);
@@ -53,37 +57,42 @@ namespace Core
 
                 Core::Engine::EntityID et = m_CurrentScene.createEntity();
 
-                m_CurrentScene.m_Ecs.Add<Engine::Transform>(et, Engine::Transform{ { x * squareWidth, y * squareHeight, 0 }, { squareWidth, squareHeight, 0 }, 0.0f });
 				m_CurrentScene.m_Ecs.Add<Engine::Color>(et, Engine::Color{ r, g, b, 255 });
+                m_CurrentScene.m_Ecs.Add<Engine::Transform>(et, Engine::Transform{ { x * squareWidth, y * squareHeight, 0 }, { squareWidth, squareHeight, 0 }, 0.0f });
                 m_CurrentScene.m_Ecs.Add<Engine::Render>(et, Engine::Render{});
             }
         }
 
+        std::cout << YELLOW_BACKGROUND << BLACK << std::format("Number of Quads: {}\n", m_CurrentScene.getEntityCount()) << RESET;
+
         defaultShader.setUniformMat4x4("u_View", mainCamera.getViewMatrix());
         defaultShader.setUniformMat4x4("u_Proj", mainCamera.getProjectionMatrix());
 
-        double mousePos[2];
-        
         {
             Utils::Timer timer;
-            
+
             while (!Core::Window::windowShouldClose(coreWindow))
             {
                 timer.startTimerPeriod();
+				
                 glClear(GL_COLOR_BUFFER_BIT);
 
-                glfwGetCursorPos(coreWindow.getGLFWwindow(), &mousePos[0], &mousePos[1]);
-
                 m_CurrentScene.updateScene();
-
+                
                 glfwSwapBuffers(coreWindow.getGLFWwindow());
-
+                
                 glFlush();
                 glfwPollEvents();
                 timer.endTimerPeriod();
             }
         }
+    }
 
+    void Application::OnEvent(Event::Event& e)
+    {
+        Event::EventDispatcher dispatcher(e);
+
+		std::cout << YELLOW_BACKGROUND << BLACK << e.toString() << '\n' << RESET;
     }
 
     std::string Application::findAssetFolder() const

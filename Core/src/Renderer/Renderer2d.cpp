@@ -12,7 +12,7 @@ namespace Core::Renderer
 
 	struct RendererStorage
 	{
-		const uint32_t QuadBatchSize = 50000;
+		const uint32_t QuadBatchSize = 35000;
 		const uint32_t VertexCountPerBatch = QuadBatchSize * 4;
 		const uint32_t IndexCountPerBatch = QuadBatchSize * 6;
 
@@ -79,6 +79,8 @@ namespace Core::Renderer
 	{
 		s_Data.QuadVertexPtr = s_Data.QuadVertexBasePtr;
 		s_Data.IndexCount = 0;
+
+		drawCalls += 1;
 	}
 
 	void Renderer2d::DrawQuad(const Engine::Transform& transform, const Engine::Color& color)
@@ -111,7 +113,7 @@ namespace Core::Renderer
 
 		s_Data.IndexCount += 6;
 	}
-	
+
 	void Renderer2d::flush() const 
 	{
 		uint32_t size = (uint8_t*)s_Data.QuadVertexPtr - (uint8_t*)s_Data.QuadVertexBasePtr;

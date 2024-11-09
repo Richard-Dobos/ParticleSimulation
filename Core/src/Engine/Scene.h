@@ -9,8 +9,8 @@
 
 #include "ECS.h"
 #include "Camera.h"
-#include "GameObject.h"
 #include "Utils/Shader.h"
+#include "Utils/Timer.h"
 #include "Renderer/Renderer2d.h"
 #include "Components/Components.h"
 #include "Utils/RandomNumberGenerator.h"
@@ -27,13 +27,15 @@ namespace Core::Engine
 		//void createEntity(const Transform& transform, const Color& color);
 		EntityID createEntity();
 		void deleteEntity(EntityID entity);
-		void createMainCamera(Camera2d& camera);
+		void switchMainCamera(Camera2d& camera);
 
 		void updateScene();
 
-		void addShader(Core::Utils::Shader& shader);
+		void addShader(Utils::Shader& shader);
 
 		const uint32_t getSizeB() const;
+
+		uint32_t getEntityCount() const;
 
 	public:
 		uint32_t m_ActiveShaderID;

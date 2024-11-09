@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "Core.h"
+#include "Events/Event.h"
 
 namespace Core
 {
@@ -12,6 +13,7 @@ namespace Core
 		Application() = default;
 
 		void Update();
+		void OnEvent(Event::Event& event);
 		void OnBegin();
 
 	private:

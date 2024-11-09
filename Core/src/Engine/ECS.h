@@ -474,7 +474,7 @@ namespace Core::Engine
 				{
 					EntityID id = data[i];
 
-					// This branch is for [](EntityID id, Component& c1, Component& c2);
+					// This branch is for [](EntityID id, Component& c1, Component& c2);=]
 					// constexpr denotes this is evaluated at compile time, which allows
 					// the calling of func with different parameters.
 					if constexpr (std::is_invocable_v<Func, EntityID, Components&...>) 

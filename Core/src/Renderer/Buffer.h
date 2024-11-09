@@ -107,6 +107,7 @@ namespace Core::Renderer
 
 		std::vector<BufferElement>::iterator begin() { return m_BufferElements.begin(); }
 		std::vector<BufferElement>::iterator end() { return m_BufferElements.end(); }
+
 	private:
 		void calculateOffsetAndStride()
 		{

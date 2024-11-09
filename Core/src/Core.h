@@ -10,6 +10,9 @@
 	#define CORE_API __declspec(dllimport)
 #endif
 
+#define BIT(x) (1 << x)
+#define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
+
 #define RESET   "\033[0m"
 
 #define BLACK	"\033[30m"

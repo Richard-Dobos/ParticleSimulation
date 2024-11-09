@@ -166,6 +166,7 @@ xcopy /y /d "$(SolutionDir)\$(ProjectName)\vendors\\GLEW\lib\glew32.dll" "$(OutD
     <ClCompile Include="src\Engine\Camera.cpp" />
     <ClCompile Include="src\Engine\ECS.h" />
     <ClCompile Include="src\Engine\Scene.cpp" />
+    <ClCompile Include="src\Input\Input.cpp" />
     <ClCompile Include="src\Renderer\Renderer2d.cpp" />
     <ClCompile Include="src\Renderer\VertexArray.cpp" />
     <ClCompile Include="src\Renderer\Buffer.cpp" />
@@ -178,8 +179,12 @@ xcopy /y /d "$(SolutionDir)\$(ProjectName)\vendors\\GLEW\lib\glew32.dll" "$(OutD
     <ClInclude Include="src\Core.h" />
     <ClInclude Include="src\Engine\Camera.h" />
     <ClInclude Include="src\Engine\Components\Components.h" />
-    <ClInclude Include="src\Engine\GameObject.h" />
     <ClInclude Include="src\Engine\Scene.h" />
+    <ClInclude Include="src\Events\Event.h" />
+    <ClInclude Include="src\Events\KeyEvent.h" />
+    <ClInclude Include="src\Events\MouseEvent.h" />
+    <ClInclude Include="src\Events\ApplicationEvent.h" />
+    <ClInclude Include="src\Input\Input.h" />
     <ClInclude Include="src\Renderer\Renderer2d.h" />
     <ClInclude Include="src\Renderer\VertexArray.h" />
     <ClInclude Include="src\Renderer\Buffer.h" />

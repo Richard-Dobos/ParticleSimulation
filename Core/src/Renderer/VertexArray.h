@@ -5,6 +5,7 @@
 
 #include "Buffer.h"
 #include "Utils/Shader.h"
+
 #include "glew.h"
 #include "glm.hpp"
 
@@ -24,6 +25,7 @@ namespace Core::Renderer
 
 		std::shared_ptr<IndexBuffer> getIndexBuffer() const { return m_IndexBuffer; }
 		std::shared_ptr<VertexBuffer> getVertexBuffer() const { return m_VertexBuffer; }
+
 	private:
 		uint32_t m_VertexArrayID;
 		std::shared_ptr<IndexBuffer> m_IndexBuffer;
