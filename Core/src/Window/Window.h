@@ -4,14 +4,22 @@
 #include <memory>
 #include <format>
 #include <iostream>
+#include <functional>
 
 #include "Core.h"
+#include "Events/Event.h"
+#include "Events/KeyEvent.h"
+#include "Events/MouseEvent.h"
+#include "Events/ApplicationEvent.h"
+
 #include "glew.h"
 #include "glfw3.h"
 
 namespace Core::Window
 {
-	static bool s_glewInitialazed = false;
+	using EventCallbackFn = std::function<void(Event::Event&)>;
+	
+	static bool s_glewInitialized = false;
 	static bool s_GLFWInitialized = false;
 
 	struct CORE_API WindowProperties
@@ -21,9 +29,15 @@ namespace Core::Window
 
 		bool Vsync;
 		float AspectRatio;
-		std::string Name;
 
-		WindowProperties(std::string const& name = "Default Window Handle", uint32_t windowWidth = 720, uint32_t windowHeight = 480, bool vsync = true)
+		std::string Name;
+		std::string GraphicsDevice;
+		std::string OpenGLVersion;
+		std::string GLSLVersion;
+
+		EventCallbackFn windowEventCallbackFn;
+
+		WindowProperties(std::string const& name = "Default Window Handle", uint16_t windowWidth = 720, uint16_t windowHeight = 480, bool vsync = true)
 			:Width(windowWidth), Height(windowHeight), Vsync(vsync), AspectRatio((float)windowWidth / (float)windowHeight), Name(name) {}
 	};
 
@@ -31,11 +45,13 @@ namespace Core::Window
 	{
 	public:
 		Window(uint16_t windowWidth, uint16_t windowHeight, const std::string& name, bool vsync);
-		Window(WindowProperties& windowProperties) : Window(windowProperties.Width, windowProperties.Height, windowProperties.Name, windowProperties.Vsync) {}
+		Window(const WindowProperties& windowProperties) : Window(windowProperties.Width, windowProperties.Height, windowProperties.Name, windowProperties.Vsync) {}
 		~Window();
 
 		GLFWwindow* getGLFWwindow() const { return m_GLFWWindow; }
 		const WindowProperties* getWindowProperties() const;
+
+		void setEventCallback(const EventCallbackFn& callback) { m_WindowProperties.windowEventCallbackFn = callback; }
 
 	private:
 		WindowProperties m_WindowProperties;
