@@ -57,4 +57,6 @@ namespace Core::Utils
 		std::string m_FragmentShaderSource;
 		uint32_t m_ShaderProgramID;
 	};
+
+	uint32_t getCurrentShaderID();
 };

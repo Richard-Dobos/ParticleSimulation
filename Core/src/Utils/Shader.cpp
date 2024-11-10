@@ -9,11 +9,11 @@ namespace Core::Utils
 {
 	Shader::Shader(const char* vertexShaderFilePath, const char* fragmentShaderFilePath)
 	{
-
-		LOG_TRACE("Compiling Shader: {}", vertexShaderFilePath);
-		LOG_TRACE("Compiling Shader: {}", fragmentShaderFilePath);
-
 		m_ShaderProgramID = glCreateProgram();
+
+		LOG_TRACE("Compiling Shader {}: {}", m_ShaderProgramID, vertexShaderFilePath);
+		LOG_TRACE("Compiling Shader {}: {}", m_ShaderProgramID, fragmentShaderFilePath);
+
 		m_VertexShaderSource = parseShader(vertexShaderFilePath);
 		m_FragmentShaderSource = parseShader(fragmentShaderFilePath);
 
@@ -26,9 +26,9 @@ namespace Core::Utils
 
 	Shader::Shader(const std::string& vertexShaderCode, const std::string& fragmentShaderCode)
 	{
-		LOG_TRACE("Compiling Shaders.");
-
 		m_ShaderProgramID = glCreateProgram();
+
+		LOG_TRACE("Compiling Shaders {}", m_ShaderProgramID);
 
 		if (createShaderProgram(vertexShaderCode.c_str(), GL_VERTEX_SHADER) && createShaderProgram(fragmentShaderCode.c_str(), GL_FRAGMENT_SHADER))
 			glLinkProgram(m_ShaderProgramID);
@@ -150,15 +150,23 @@ namespace Core::Utils
 		return location;
 	}
 
-	/*void Shader::bind() const
+	void bind(uint32_t shaderID)
 	{
-		glUseProgram(m_ShaderProgramID);
+		glUseProgram(shaderID);
 	}
 
-	void Shader::unBind() const
+	void unBind()
 	{
 		glUseProgram(0);
-	}*/
+	}
+
+	uint32_t getCurrentShaderID()
+	{
+		int currentProgram;
+		glGetIntegerv(GL_CURRENT_PROGRAM, &currentProgram);
+
+		return currentProgram;
+	}
 
 	void Shader::setUniformVector(const std::string& name, ShaderUniformDataType uniformDataType, const void* value, uint32_t count)
 	{
