@@ -76,17 +76,17 @@ namespace Core
 				
                 glClear(GL_COLOR_BUFFER_BIT);
 
-                m_CurrentScene.updateScene();
-                
                 if (Input::isKeyPressed(Input::KeyCode::T))
                 {
-					m_CurrentScene.changeActiveShader(testShader.getShaderProgramID());
+                    m_CurrentScene.changeActiveShader(testShader.getShaderProgramID());
                 }
 
-				else if (Input::isKeyPressed(Input::KeyCode::D))
+				if (Input::isKeyPressed(Input::KeyCode::D))
 				{
-					m_CurrentScene.changeActiveShader(defaultShader.getShaderProgramID());
+                    m_CurrentScene.changeActiveShader(defaultShader.getShaderProgramID());
 				}
+
+                m_CurrentScene.updateScene();
 
                 glfwSwapBuffers(coreWindow.getGLFWwindow());
                 
