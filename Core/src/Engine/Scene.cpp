@@ -16,7 +16,16 @@ namespace Core::Engine
 
 	void Scene::deleteEntity(EntityID entity)
 	{
-		m_Ecs.DeleteEntity(entity);
+		for (uint64_t i = 0; i < m_EntityList.size(); i++)
+		{
+			if (m_EntityList[i] == entity)
+			{
+				m_DeletedEntities.push_back(entity);
+				std::swap(m_EntityList[i], m_EntityList.back());
+				
+				break;
+			}
+		}
 	}
 	void Scene::switchMainCamera(Camera2d& camera)
 	{
@@ -25,6 +34,7 @@ namespace Core::Engine
 
 	void Scene::updateScene()
 	{
+		updateEntities();
 		sceneRenderPass();
 	}
 	
@@ -47,11 +57,25 @@ namespace Core::Engine
 		m_Renderer.drawCalls = 0;
 	}	
 
+	inline void Scene::updateEntities()
+	{
+		for (EntityID entity : m_DeletedEntities)
+		{
+			 m_Ecs.DeleteEntity(entity);
+		}
+
+		if (!m_DeletedEntities.empty())
+		{
+			m_DeletedEntities.clear();
+		}
+	}
+
 	void Scene::addShader(Utils::Shader& shader)
 	{
 		if (m_ActiveShaderID == 0)
 		{
 			m_ActiveShaderID = shader.getShaderProgramID();
+
 			Utils::Shader::bind(m_ActiveShaderID);
 
 			shader.setUniformMat4x4("u_View", m_MainCamera->getViewMatrix());
@@ -65,24 +89,25 @@ namespace Core::Engine
 	{
 		if (m_ActiveShaderID != shaderID)
 		{
-			m_ActiveShaderID = shaderID;
 			Utils::Shader* shader = m_Shaders.at(shaderID);
 
-			Utils::Shader::bind(shaderID);
+			m_ActiveShaderID = shaderID;
+
+			Utils::Shader::bind(m_ActiveShaderID);
 
 			shader->setUniformMat4x4("u_View", m_MainCamera->getViewMatrix());
 			shader->setUniformMat4x4("u_Proj", m_MainCamera->getProjectionMatrix());
 		}
 	}
 
-	const uint32_t Scene::getSizeB() const
+	const size_t Scene::getSizeB() const
 	{
-		uint32_t size = 0;
+		size_t sceneSize = 0;
 
-		return size;
+		return sceneSize;
 	}
 
-	uint32_t Scene::getEntityCount() const
+	uint64_t Scene::getEntityCount() const
 	{
 		return m_EntityList.size();
 	}

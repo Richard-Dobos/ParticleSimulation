@@ -35,23 +35,26 @@ namespace Core::Engine
 
 		void updateScene();
 
-		const uint32_t getSizeB() const;
-		uint32_t getEntityCount() const;
+		const size_t getSizeB() const;
+		uint64_t getEntityCount() const;
 
 	public:
 		ECS m_Ecs;
 
 	private:
 		inline void sceneRenderPass();
-		
+		inline void updateEntities();
+
 	private:
 		uint32_t m_ActiveShaderID = 0;
+
 		std::string m_SceneName;
 
 		Renderer::Renderer2d m_Renderer;
 		Engine::Camera2d* m_MainCamera;
 
 		std::vector<EntityID> m_EntityList;
+		std::vector<EntityID> m_DeletedEntities;
 		std::unordered_map<uint32_t, Core::Utils::Shader*> m_Shaders;
 	};
 }
