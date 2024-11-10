@@ -21,22 +21,21 @@ namespace Core::Window
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
 
 		if (!m_GLFWWindow)
-			std::cerr << RED_BACKGROUND << BLACK << "Failed to initialize GLFW Window!\n" << RESET;
+			LOG_ERROR("Failed to initialize GLFW Window!");
 		if (!m_GLFWPrimaryMonitor)
-			std::cerr << RED_BACKGROUND << BLACK << "Failed to find Primary Monitor!\n" << RESET;
+			LOG_ERROR("Failed to find Primary Monitor!");
 		if (!m_GLFWPrimaryMonitorVidMode)
-			std::cerr << RED_BACKGROUND << BLACK << "Failed to get monitor's video modes!\n" << RESET;
+			LOG_ERROR("Failed to get monitor's video modes!");
 
 		if (m_GLFWWindow)
 		{
-			std::cout << GREEN_BACKGROUND << BLACK << std::format("GLFW Window Initialized\nName: {}\nWidth: {}\nHeight: {}\nScale: {}\nV-sync: {}\n",
-				m_WindowProperties.Name, m_WindowProperties.Width, m_WindowProperties.Height, m_WindowProperties.AspectRatio, m_WindowProperties.Vsync) << RESET;
+			LOG_INFO("GLFW Window Initialized\nName: {}\nWidth: {}\nHeight: {}\nScale: {}\nV-sync: {}", m_WindowProperties.Name, m_WindowProperties.Width, m_WindowProperties.Height, m_WindowProperties.AspectRatio, m_WindowProperties.Vsync);
 			glfwMakeContextCurrent(m_GLFWWindow);
 		}
 
 		if (glewInit() != GLEW_OK)
 		{
-			std::cerr << RED_BACKGROUND << BLACK << "Failed to initialize GLEW.\n" << RESET;
+			LOG_ERROR("Failed to initialize GLEW!");
 			glfwTerminate();
 		}
 
@@ -46,7 +45,7 @@ namespace Core::Window
 			m_WindowProperties.OpenGLVersion = std::string((const char*)glGetString(GL_VERSION));
 			m_WindowProperties.GLSLVersion = std::string((const char*)glGetString(GL_SHADING_LANGUAGE_VERSION));
 			
-			std::cout << GREEN_BACKGROUND << BLACK << std::format("OpenGL Initialized\nGraphics Device: {}\nOpenGL Version: {}\nGLSL Version: {}\n", m_WindowProperties.GraphicsDevice, m_WindowProperties.OpenGLVersion, m_WindowProperties.GLSLVersion) << RESET;
+			LOG_INFO("OpenGL Initialized\nGraphics Device: {}\nOpenGL Version: {}\nGLSL Version: {}", m_WindowProperties.GraphicsDevice, m_WindowProperties.OpenGLVersion, m_WindowProperties.GLSLVersion);
 		}
 
 		glfwSwapInterval(m_WindowProperties.Vsync);
@@ -63,6 +62,8 @@ namespace Core::Window
 			windowProperties->Height = height;
 			windowProperties->AspectRatio = (float)width / (float)height;
 			windowProperties->windowEventCallbackFn(event);
+
+			glViewport(0, 0, width, height);
 		});
 
 		glfwSetWindowCloseCallback(m_GLFWWindow, [](GLFWwindow* window)

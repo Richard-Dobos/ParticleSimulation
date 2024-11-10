@@ -49,7 +49,30 @@ namespace Core::Engine
 
 	void Scene::addShader(Utils::Shader& shader)
 	{
+		if (m_ActiveShaderID == 0)
+		{
+			m_ActiveShaderID = shader.getShaderProgramID();
+			Utils::Shader::bind(m_ActiveShaderID);
+
+			shader.setUniformMat4x4("u_View", m_MainCamera->getViewMatrix());
+			shader.setUniformMat4x4("u_Proj", m_MainCamera->getProjectionMatrix());
+		}
+
 		m_Shaders[shader.getShaderProgramID()] = &shader;
+	}
+
+	void Scene::changeActiveShader(uint32_t shaderID)
+	{
+		if (m_ActiveShaderID != shaderID)
+		{
+			m_ActiveShaderID = shaderID;
+			Utils::Shader* shader = m_Shaders.at(shaderID);
+
+			Utils::Shader::bind(shaderID);
+
+			shader->setUniformMat4x4("u_View", m_MainCamera->getViewMatrix());
+			shader->setUniformMat4x4("u_Proj", m_MainCamera->getProjectionMatrix());
+		}
 	}
 
 	const uint32_t Scene::getSizeB() const

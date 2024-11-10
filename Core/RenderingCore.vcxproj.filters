@@ -122,6 +122,9 @@
     <ClInclude Include="src\Events\ApplicationEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Input\KeyCodes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="vendors\GLFW\lib-vc2022\glfw3.dll" />

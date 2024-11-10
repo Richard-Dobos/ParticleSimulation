@@ -4,6 +4,7 @@
 #include <filesystem>
 
 #include "Application.h"
+#include "Input/Input.h"
 #include "Utils/Timer.h"
 #include "Utils/Shader.h"
 #include "Engine/Scene.h"
@@ -26,18 +27,19 @@ namespace Core
 
         std::string vertShaderPath = findAssetFolder() + "\\DefaultShaders\\DefaultVertexShader.glsl";
         std::string fragShaderPath = findAssetFolder() + "\\DefaultShaders\\DefaultFragShader.glsl";
-        
-        Utils::Shader defaultShader(vertShaderPath.c_str(), fragShaderPath.c_str());
-        defaultShader.bind();
+		std::string testFragShaderPath = findAssetFolder() + "\\DefaultShaders\\Test.glsl";
 
+        Utils::Shader defaultShader(vertShaderPath.c_str(), fragShaderPath.c_str());
+		Utils::Shader testShader(vertShaderPath.c_str(), testFragShaderPath.c_str());
+        
         Engine::Scene m_CurrentScene("Main Scene");
         Engine::Camera2d mainCamera(Engine::Transform({ 0.0f, 0.0f, 0.0f }), RESOLUTION[0], RESOLUTION[1], coreWindow.getWindowProperties()->AspectRatio, -1.0f, 1.0f);
 
         m_CurrentScene.switchMainCamera(mainCamera);
 
         m_CurrentScene.addShader(defaultShader);
-        m_CurrentScene.m_ActiveShaderID = defaultShader.getShaderProgramID();
-        
+		m_CurrentScene.addShader(testShader);
+
         float squareWidth = 10;
         float squareHeight = 10;
 
@@ -63,10 +65,7 @@ namespace Core
             }
         }
 
-        std::cout << YELLOW_BACKGROUND << BLACK << std::format("Number of Quads: {}\n", m_CurrentScene.getEntityCount()) << RESET;
-
-        defaultShader.setUniformMat4x4("u_View", mainCamera.getViewMatrix());
-        defaultShader.setUniformMat4x4("u_Proj", mainCamera.getProjectionMatrix());
+        LOG_TRACE("Number of Entities: {}", m_CurrentScene.getEntityCount());
 
         {
             Utils::Timer timer;
@@ -79,6 +78,16 @@ namespace Core
 
                 m_CurrentScene.updateScene();
                 
+                if (Input::isKeyPressed(Input::KeyCode::T))
+                {
+					m_CurrentScene.changeActiveShader(testShader.getShaderProgramID());
+                }
+
+				else if (Input::isKeyPressed(Input::KeyCode::D))
+				{
+					m_CurrentScene.changeActiveShader(defaultShader.getShaderProgramID());
+				}
+
                 glfwSwapBuffers(coreWindow.getGLFWwindow());
                 
                 glFlush();
@@ -91,14 +100,13 @@ namespace Core
     void Application::OnEvent(Event::Event& e)
     {
         Event::EventDispatcher dispatcher(e);
-
-		std::cout << YELLOW_BACKGROUND << BLACK << e.toString() << '\n' << RESET;
+		//LOG_INFO("Event: {}", e.toString());
     }
 
     std::string Application::findAssetFolder() const
     {
         std::filesystem::path currentPath = std::filesystem::current_path();
-        std::cout << WHITE_BACKGROUND << BLACK << "Current Path: " << currentPath.string() << '\n' << RESET;
+		LOG_INFO("Current Path: {}", currentPath.string());
 
         std::filesystem::path assetPath;
         bool foundFolder = false;
@@ -118,11 +126,10 @@ namespace Core
 
         if (foundFolder) 
         {
-            std::cout << GREEN_BACKGROUND << BLACK << "Asset path: " << assetPath << '\n';
+			LOG_INFO("Asset Path: {}", assetPath.string());
             return assetPath.string();
         }
 
-        std::cout << RED_BACKGROUND << BLACK << "Couldn't find folder \"Assets\"\n";
         return currentPath.string();
     }
 }

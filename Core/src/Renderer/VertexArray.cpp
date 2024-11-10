@@ -32,7 +32,7 @@ namespace Core::Renderer
 		uint32_t index = 0;
 
 		if (layout.begin() == layout.end())
-			std::cout << YELLOW << "Buffer Layout not found!\n" << RESET;
+			LOG_WARN("Buffer Layout not found!\n");
 
 		else
 		{

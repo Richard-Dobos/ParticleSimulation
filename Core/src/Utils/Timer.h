@@ -23,7 +23,7 @@ namespace Core::Utils
 			double averageFrameTime = duration / m_FrameCount;
             double averageFPS = m_FrameCount / (duration * 0.001);
 
-            std::cout << CYAN_BACKGROUND << BLACK << "\nAverage FrameTime: " << averageFrameTime << "ms" << " || Average FPS: " << averageFPS << RESET;
+			LOG_INFO("Average FrameTime: {}ms || Average FPS: {}", averageFrameTime, averageFPS);
         }
 
         void startTimerPeriod()
@@ -47,8 +47,6 @@ namespace Core::Utils
             double duration = (end - start) * 0.001f;
 
 			m_FrameCount += 1;
-
-            std::cout << CYAN_BACKGROUND << BLACK << "\rFrameTime: " << duration << "ms" << " || FPS: " << 1000 / duration << RESET;
 
             return duration;
         }

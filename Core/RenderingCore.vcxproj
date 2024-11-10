@@ -185,6 +185,7 @@ xcopy /y /d "$(SolutionDir)\$(ProjectName)\vendors\\GLEW\lib\glew32.dll" "$(OutD
     <ClInclude Include="src\Events\MouseEvent.h" />
     <ClInclude Include="src\Events\ApplicationEvent.h" />
     <ClInclude Include="src\Input\Input.h" />
+    <ClInclude Include="src\Input\KeyCodes.h" />
     <ClInclude Include="src\Renderer\Renderer2d.h" />
     <ClInclude Include="src\Renderer\VertexArray.h" />
     <ClInclude Include="src\Renderer\Buffer.h" />

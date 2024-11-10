@@ -27,24 +27,25 @@ namespace Core::Engine
 		//void createEntity(const Transform& transform, const Color& color);
 		EntityID createEntity();
 		void deleteEntity(EntityID entity);
+		
 		void switchMainCamera(Camera2d& camera);
+		
+		void addShader(Utils::Shader& shader);
+		void changeActiveShader(uint32_t shaderID);
 
 		void updateScene();
 
-		void addShader(Utils::Shader& shader);
-
 		const uint32_t getSizeB() const;
-
 		uint32_t getEntityCount() const;
 
 	public:
-		uint32_t m_ActiveShaderID;
 		ECS m_Ecs;
 
 	private:
 		inline void sceneRenderPass();
 		
 	private:
+		uint32_t m_ActiveShaderID = 0;
 		std::string m_SceneName;
 
 		Renderer::Renderer2d m_Renderer;
