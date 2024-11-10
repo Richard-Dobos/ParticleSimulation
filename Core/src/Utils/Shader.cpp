@@ -9,8 +9,9 @@ namespace Core::Utils
 {
 	Shader::Shader(const char* vertexShaderFilePath, const char* fragmentShaderFilePath)
 	{
-		std::cout << YELLOW_BACKGROUND << BLACK << "Compiling Shader: " << vertexShaderFilePath << '\n' << RESET;
-		std::cout << YELLOW_BACKGROUND << BLACK << "Compiling Shader: " << fragmentShaderFilePath << '\n' << RESET;
+
+		LOG_TRACE("Compiling Shader: {}", vertexShaderFilePath);
+		LOG_TRACE("Compiling Shader: {}", fragmentShaderFilePath);
 
 		m_ShaderProgramID = glCreateProgram();
 		m_VertexShaderSource = parseShader(vertexShaderFilePath);
@@ -25,7 +26,7 @@ namespace Core::Utils
 
 	Shader::Shader(const std::string& vertexShaderCode, const std::string& fragmentShaderCode)
 	{
-		std::cout << YELLOW_BACKGROUND << BLACK << "Compiling Shaders.\n" << RESET;
+		LOG_TRACE("Compiling Shaders.");
 
 		m_ShaderProgramID = glCreateProgram();
 
@@ -48,7 +49,11 @@ namespace Core::Utils
 
 		if (!stream.is_open())
 		{
-			shaderPath == nullptr ? std::cout << GREEN_BACKGROUND << BLACK << "Shader Path Not Specified.\n" << RESET : std::cout << RED_BACKGROUND << BLACK << "ERROR: Failed to open SHADER at path: " << shaderPath << "\n" << RESET;
+			if (shaderPath == nullptr)
+				LOG_ERROR("Shader Path Not Specified.");
+			else
+				LOG_ERROR("Failed to open SHADER at path : {}", shaderPath);
+
 			return "\0";
 		}
 
@@ -59,7 +64,7 @@ namespace Core::Utils
 			shaderSource << line << "\n";
 		}
 
-		std::cout << GREEN_BACKGROUND << BLACK << "Shader Parse Successful.\n" << RESET;
+		LOG_INFO("Shader Parse Successful.");
 
 		return shaderSource.str();
 	}
@@ -104,27 +109,27 @@ namespace Core::Utils
 		switch (shaderType)
 		{
 		default:
-			std::cerr << RED_BACKGROUND << BLACK << "Shader compilation failed!\n" << messageBuffer.data() << RESET;
+			LOG_ERROR("Shader compilation failed!\n{}", messageBuffer.data());
 			break;
 
 		case GL_VERTEX_SHADER:
-			std::cerr << RED_BACKGROUND << BLACK << "Vertex Shader compilation failed!\n" << messageBuffer.data() << RESET;
+			LOG_ERROR("Vertex Shader compilation failed!\n{}", messageBuffer.data());
 			break;
 
 		case GL_FRAGMENT_SHADER:
-			std::cerr << RED_BACKGROUND << BLACK << "Fragment Shader compilation failed!\n" << messageBuffer.data() << RESET;
+			LOG_ERROR("Fragment Shader compilation failed!\n{}", messageBuffer.data());
 			break;
 
 		case GL_GEOMETRY_SHADER:
-			std::cerr << RED_BACKGROUND << BLACK << "Geometry Shader compilation failed!\n" << messageBuffer.data() << RESET;
+			LOG_ERROR("Geometry Shader compilation failed!\n{}", messageBuffer.data());
 			break;
 
 		case GL_TESS_EVALUATION_SHADER:
-			std::cerr << RED_BACKGROUND << BLACK << "Tessellation Evaluation Shader compilation failed!\n" << messageBuffer.data() << RESET;
+			LOG_ERROR("Tessellation Evaluation Shader compilation failed!\n{}", messageBuffer.data());
 			break;
 
 		case GL_TESS_CONTROL_SHADER:
-			std::cerr << RED_BACKGROUND << BLACK << "Tessellation Control Shader compilation failed!\n" << messageBuffer.data() << RESET;
+			LOG_ERROR("Tessellation Control Shader compilation failed!\n{}", messageBuffer.data());
 			break;
 		}
 	}
@@ -137,7 +142,7 @@ namespace Core::Utils
 		GLint location = glGetUniformLocation(m_ShaderProgramID, name.c_str());
 
 		if (location == -1)
-			std::cout << RED_BACKGROUND << BLACK << "Uniform " << name << " doesn't exist.\n" << RESET;
+			LOG_ERROR("Uniform {} doesn't exist.", name);
 
 		else
 			m_UniformCache[name] = location;
@@ -145,7 +150,7 @@ namespace Core::Utils
 		return location;
 	}
 
-	void Shader::bind() const
+	/*void Shader::bind() const
 	{
 		glUseProgram(m_ShaderProgramID);
 	}
@@ -153,7 +158,7 @@ namespace Core::Utils
 	void Shader::unBind() const
 	{
 		glUseProgram(0);
-	}
+	}*/
 
 	void Shader::setUniformVector(const std::string& name, ShaderUniformDataType uniformDataType, const void* value, uint32_t count)
 	{
@@ -192,7 +197,7 @@ namespace Core::Utils
 			break;
 
 		default:
-			std::cerr << RED_BACKGROUND << BLACK << "Uniform Data Type doesn't exist!\n" << RESET;
+			LOG_ERROR("Uniform Data Type doesn't exist!");
 		}
 	}
 

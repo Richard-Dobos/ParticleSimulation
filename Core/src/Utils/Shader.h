@@ -33,8 +33,8 @@ namespace Core::Utils
 		Shader(const std::string& vertexShaderCode, const std::string& fragmentShaderCode);
 		~Shader();
 
-		void bind() const;
-		void unBind() const;
+		static void bind(uint32_t shaderID) { glUseProgram(shaderID); }
+		static void unBind() { glUseProgram(0); }
 
 		void setUniformVector(const std::string& name, ShaderUniformDataType uniformDataType, const void* value, uint32_t count);
 		void setUniformMat4x4(const std::string& name, const glm::mat4& matrix);
