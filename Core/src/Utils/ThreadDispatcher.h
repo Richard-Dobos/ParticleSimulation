@@ -17,9 +17,11 @@ namespace Core::Utils
 
 	public:
 		ThreadDispatcher(uint16_t numberOfThreads);
+		ThreadDispatcher();
 		~ThreadDispatcher();
 
 		void dispatchTask(ThreadTask threadTask);
+		void dispatchNewThreadWorkers(uint16_t numberOfThreads);
 
 		static uint16_t getCPUThreadCount() { return std::thread::hardware_concurrency(); };
 		uint16_t getDispatchedCPUThreadsCount() const;

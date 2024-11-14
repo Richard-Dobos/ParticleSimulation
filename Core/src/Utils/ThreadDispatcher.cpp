@@ -20,6 +20,32 @@ namespace Core::Utils
 		}
 	}
 
+	ThreadDispatcher::ThreadDispatcher()
+	{
+		uint16_t CPUThreads = getCPUThreadCount();
+		uint16_t workerThreadsToDispatch = 1;
+
+		if (CPUThreads < 4 && CPUThreads > 2)
+		{
+			workerThreadsToDispatch = 2;
+		}
+
+		else if(CPUThreads < 8)
+		{
+			workerThreadsToDispatch = 4;
+		}
+
+		else if (CPUThreads >= 12)
+		{
+			workerThreadsToDispatch = 8;
+		}
+
+		for (uint16_t i = 0; i < workerThreadsToDispatch; i++)
+		{
+			m_WorkerThreads.emplace_back([this] { workerThread(); });
+		}
+	}
+
 	ThreadDispatcher::~ThreadDispatcher()
 	{
 		{
@@ -37,6 +63,21 @@ namespace Core::Utils
 					worker.join();
 				}
 			}
+		}
+	}
+
+	void ThreadDispatcher::dispatchNewThreadWorkers(uint16_t numberOfThreads)
+	{
+		m_CPUThreadsDispatched++;
+
+		if (m_CPUThreadsDispatched > getCPUThreadCount())
+		{
+			LOG_WARN("Number of threads [{}] exceeded real number of thread [{}] on cpu!", m_CPUThreadsDispatched, getCPUThreadCount());
+		}
+
+		for (uint16_t i = 0; i < numberOfThreads; i++)
+		{
+			m_WorkerThreads.emplace_back([this] { workerThread(); });
 		}
 	}
 
@@ -74,5 +115,4 @@ namespace Core::Utils
 	{
 		return m_CPUThreadsDispatched;
 	}
-	
 }
