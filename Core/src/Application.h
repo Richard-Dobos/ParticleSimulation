@@ -16,8 +16,6 @@ namespace Core
 		void OnBegin();
 
 	private:
-		void Runtime();
-		
 		std::string findAssetFolder() const;
 	};
 }

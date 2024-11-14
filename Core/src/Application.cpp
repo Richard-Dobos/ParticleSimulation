@@ -2,6 +2,7 @@
 #include <memory>
 #include <vector>
 #include <filesystem>
+#include <thread>
 
 #include "Application.h"
 #include "Input/Input.h"
@@ -16,6 +17,32 @@ namespace Core
 {
     const uint16_t RESOLUTION[2] = { 1280, 720 };
 
+	// 100 x 100 squares
+	// 1280 / 100 = 12.8
+	// 720 / 100 = 7.2
+
+    void generateSquares(const Window::Window& window, Engine::Scene& currentScene, int numberOfQuadsHor, int numberOfQuadsVer)
+    {
+        for (uint16_t y = 0; y < numberOfQuadsVer; y++)
+        {
+            for (uint16_t x = 0; x < numberOfQuadsHor; x++)
+            {
+                uint8_t r = static_cast<uint8_t>(std::rand() % 256);
+                uint8_t g = static_cast<uint8_t>(std::rand() % 256);
+                uint8_t b = static_cast<uint8_t>(std::rand() % 256);
+
+                EntityID et = currentScene.createEntity();
+
+				float squareWidth = window.getWindowProperties()->Width / numberOfQuadsHor;
+				float squareHeight = window.getWindowProperties()->Height / numberOfQuadsVer;
+
+                currentScene.getECS().Add<Engine::Color>(et, Engine::Color{ r, g, b, 255 });
+                currentScene.getECS().Add<Engine::Transform>(et, Engine::Transform{ { x * squareWidth, y * squareHeight, 0}, {squareWidth, squareHeight, 0}, 0.0f});
+                currentScene.getECS().Add<Engine::Render>(et, Engine::Render{});
+            }
+        }
+    }
+
     void Application::Update()
     {
         Window::Window coreWindow(RESOLUTION[0], RESOLUTION[1], "Demo APP", false);
@@ -27,43 +54,28 @@ namespace Core
 
         std::string vertShaderPath = findAssetFolder() + "\\DefaultShaders\\DefaultVertexShader.glsl";
         std::string fragShaderPath = findAssetFolder() + "\\DefaultShaders\\DefaultFragShader.glsl";
-		std::string testFragShaderPath = findAssetFolder() + "\\DefaultShaders\\Test.glsl";
 
         Utils::Shader defaultShader(vertShaderPath.c_str(), fragShaderPath.c_str());
-		Utils::Shader testShader(vertShaderPath.c_str(), testFragShaderPath.c_str());
         
+        Utils::ThreadDispatcher tr(36);
+
         Engine::Scene m_CurrentScene("Main Scene");
         Engine::Camera2d mainCamera(Engine::Transform({ 0.0f, 0.0f, 0.0f }), RESOLUTION[0], RESOLUTION[1], coreWindow.getWindowProperties()->AspectRatio, -1.0f, 1.0f);
 
         m_CurrentScene.switchMainCamera(mainCamera);
 
         m_CurrentScene.addShader(defaultShader);
-		m_CurrentScene.addShader(testShader);
 
-        float squareWidth = 10;
-        float squareHeight = 10;
+        bool fizzEffect = false;
 
-        float divider = 10;
+        int numberOfQuadsHor = 1280;
+        int numberOfQuadsVer = 720;
 
-		m_CurrentScene.m_Ecs.RegisterComponent<Engine::Transform>();
-		m_CurrentScene.m_Ecs.RegisterComponent<Engine::Color>();
-		m_CurrentScene.m_Ecs.RegisterComponent<Engine::Render>();
+		m_CurrentScene.getECS().RegisterComponent<Engine::Transform>();
+		m_CurrentScene.getECS().RegisterComponent<Engine::Color>();
+		m_CurrentScene.getECS().RegisterComponent<Engine::Render>();
 
-        for (uint16_t x = 0; x < coreWindow.getWindowProperties()->Width / divider; x++)
-        {
-            for (uint16_t y = 0; y < coreWindow.getWindowProperties()->Height / divider; y++)
-            {   
-                uint8_t r = static_cast<uint8_t>(std::rand() % 256);
-                uint8_t g = static_cast<uint8_t>(std::rand() % 256);
-                uint8_t b = static_cast<uint8_t>(std::rand() % 256);
-
-                Core::Engine::EntityID et = m_CurrentScene.createEntity();
-
-				m_CurrentScene.m_Ecs.Add<Engine::Color>(et, Engine::Color{ r, g, b, 255 });
-                m_CurrentScene.m_Ecs.Add<Engine::Transform>(et, Engine::Transform{ { x * squareWidth, y * squareHeight, 0 }, { squareWidth, squareHeight, 0 }, 0.0f });
-                m_CurrentScene.m_Ecs.Add<Engine::Render>(et, Engine::Render{});
-            }
-        }
+		generateSquares(coreWindow, m_CurrentScene, numberOfQuadsHor, numberOfQuadsVer);
 
         LOG_TRACE("Number of Entities: {}", m_CurrentScene.getEntityCount());
 
@@ -76,23 +88,35 @@ namespace Core
 				
                 glClear(GL_COLOR_BUFFER_BIT);
 
-                if (Input::isKeyPressed(Input::KeyCode::T))
-                {
-                    m_CurrentScene.changeActiveShader(testShader.getShaderProgramID());
-                }
-
-				if (Input::isKeyPressed(Input::KeyCode::D))
+				if (Input::isKeyPressed(Input::KeyCode::F))
 				{
-                    m_CurrentScene.changeActiveShader(defaultShader.getShaderProgramID());
+					fizzEffect = true;
 				}
 
+				if (Input::isKeyPressed(Input::KeyCode::S))
+				{
+					fizzEffect = false;
+				}
+
+                if (fizzEffect)
+                {
+                    for (EntityID entity : m_CurrentScene.getEntityList())
+                    {
+                        m_CurrentScene.deleteEntity(entity);
+                    }
+
+                    generateSquares(coreWindow, m_CurrentScene, numberOfQuadsHor, numberOfQuadsVer);
+                }
+				
                 m_CurrentScene.updateScene();
 
                 glfwSwapBuffers(coreWindow.getGLFWwindow());
                 
                 glFlush();
                 glfwPollEvents();
-                timer.endTimerPeriod();
+
+                const float duration = timer.endTimerPeriod();
+				LOG_PERFORMANCE("Frame Time: {}ms | FPS: {}", duration, 1000 / duration);
             }
         }
     }

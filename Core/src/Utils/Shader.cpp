@@ -11,8 +11,8 @@ namespace Core::Utils
 	{
 		m_ShaderProgramID = glCreateProgram();
 
-		LOG_TRACE("Compiling Shader {}: {}", m_ShaderProgramID, vertexShaderFilePath);
-		LOG_TRACE("Compiling Shader {}: {}", m_ShaderProgramID, fragmentShaderFilePath);
+		LOG_INFO("Compiling Shader {}: {}", m_ShaderProgramID, vertexShaderFilePath);
+		LOG_INFO("Compiling Shader {}: {}", m_ShaderProgramID, fragmentShaderFilePath);
 
 		m_VertexShaderSource = parseShader(vertexShaderFilePath);
 		m_FragmentShaderSource = parseShader(fragmentShaderFilePath);
@@ -28,7 +28,7 @@ namespace Core::Utils
 	{
 		m_ShaderProgramID = glCreateProgram();
 
-		LOG_TRACE("Compiling Shaders {}", m_ShaderProgramID);
+		LOG_INFO("Compiling Shaders {}", m_ShaderProgramID);
 
 		if (createShaderProgram(vertexShaderCode.c_str(), GL_VERTEX_SHADER) && createShaderProgram(fragmentShaderCode.c_str(), GL_FRAGMENT_SHADER))
 			glLinkProgram(m_ShaderProgramID);
