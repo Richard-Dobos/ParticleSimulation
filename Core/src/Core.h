@@ -13,6 +13,7 @@
 #endif
 
 #define DEBUG_LOG_ENABLE
+#define DEBUG_LOG_PERFORMANCE
 
 #if defined (DEBUG_LOG_TRACE) || defined (DEBUG_LOG_ENABLE)
 	#define LOG_TRACE(...) std::cout << WHITE << "[TRACE]: " << std::format(__VA_ARGS__, __VA_ARGS__) << '\n' << RESET
@@ -35,7 +36,7 @@
 	#define LOG_ERROR(...)
 #endif
 #if defined (DEBUG_LOG_PERFORMANCE)
-	#define LOG_PERFORMANCE(...) std::cout << BRIGHT << "[PERFORMANCE]: " << std::format(__VA_ARGS__, __VA_ARGS__) << '\r' << RESET
+	#define LOG_PERFORMANCE(...) std::cout << CYAN << "[PERFORMANCE]: " << std::format(__VA_ARGS__, __VA_ARGS__) << '\r' << RESET
 #else
 	#define LOG_PERFORMANCE(...)
 #endif
@@ -70,12 +71,7 @@
 #define CYAN_BACKGROUND		"\033[46m"
 #define WHITE_BACKGROUND	"\033[47m"
 
-
-enum class LogLevel
+namespace Core
 {
-	TRACE,
-	INFO,
-	WARN,
-	ERROR,
-	PERFORMANCE
-};
+	using EntityID = uint64_t;
+}
