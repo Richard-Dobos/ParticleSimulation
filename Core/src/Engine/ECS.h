@@ -7,6 +7,8 @@
 #include <memory>
 #include <sstream>
 
+#include "Core.h"
+
 #ifndef ECS_ASSERTS
 #define ECS_ASSERT(condition, msg) \
 		if (!(condition)) { \
@@ -36,8 +38,6 @@
 
 namespace Core::Engine 
 {
-	using EntityID = uint64_t;
-
 	static constexpr EntityID NULL_ENTITY = std::numeric_limits<EntityID>::max();
 	constexpr size_t MAX_ENTITIES = NULL_ENTITY;
 	constexpr size_t MAX_COMPONENTS = 64;
@@ -154,7 +154,8 @@ namespace Core::Engine
 			sparse[sparseIndex] = index;
 		}
 
-		size_t GetDenseIndex(EntityID id) {
+		size_t GetDenseIndex(EntityID id) 
+		{
 			size_t page = id / SPARSE_MAX_SIZE;
 			size_t sparseIndex = id % SPARSE_MAX_SIZE;
 

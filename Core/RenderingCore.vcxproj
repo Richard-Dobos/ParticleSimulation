@@ -172,6 +172,7 @@ xcopy /y /d "$(SolutionDir)\$(ProjectName)\vendors\\GLEW\lib\glew32.dll" "$(OutD
     <ClCompile Include="src\Renderer\Buffer.cpp" />
     <ClCompile Include="src\Utils\RandomNumberGenerator.h" />
     <ClCompile Include="src\Utils\Shader.cpp" />
+    <ClCompile Include="src\Utils\ThreadDispatcher.cpp" />
     <ClCompile Include="src\Window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -191,6 +192,7 @@ xcopy /y /d "$(SolutionDir)\$(ProjectName)\vendors\\GLEW\lib\glew32.dll" "$(OutD
     <ClInclude Include="src\Renderer\Buffer.h" />
     <ClInclude Include="src\Utils\Shader.h" />
     <ClInclude Include="src\Utils\SparseSet.h" />
+    <ClInclude Include="src\Utils\ThreadDispatcher.h" />
     <ClInclude Include="src\Utils\Timer.h" />
     <ClInclude Include="src\Window\Window.h" />
     <ClInclude Include="vendors\GLEW\include\eglew.h" />

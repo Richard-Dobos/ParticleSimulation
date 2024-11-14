@@ -3,6 +3,7 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include <functional>
 #include <unordered_map>
 
 #include "Core.h"
@@ -13,6 +14,7 @@
 #include "Utils/Timer.h"
 #include "Renderer/Renderer2d.h"
 #include "Components/Components.h"
+#include "Utils/ThreadDispatcher.h"
 #include "Utils/RandomNumberGenerator.h"
 
 namespace Core::Engine
@@ -24,7 +26,6 @@ namespace Core::Engine
 			:m_SceneName(sceneName) {}
 		~Scene() = default;
 
-		//void createEntity(const Transform& transform, const Color& color);
 		EntityID createEntity();
 		void deleteEntity(EntityID entity);
 		
@@ -37,15 +38,19 @@ namespace Core::Engine
 
 		const size_t getSizeB() const;
 		uint64_t getEntityCount() const;
+		std::vector<EntityID> getEntityList() const;
 
-	public:
-		ECS m_Ecs;
+		ECS& getECS() { return m_ECS; }
+
+		void addSystem(const std::function<void()>& systemFunction);
 
 	private:
 		inline void sceneRenderPass();
 		inline void updateEntities();
 
 	private:
+		ECS m_ECS;
+
 		uint32_t m_ActiveShaderID = 0;
 
 		std::string m_SceneName;
@@ -55,6 +60,7 @@ namespace Core::Engine
 
 		std::vector<EntityID> m_EntityList;
 		std::vector<EntityID> m_DeletedEntities;
+		std::vector<std::function<void()>> m_Systems;
 		std::unordered_map<uint32_t, Core::Utils::Shader*> m_Shaders;
 	};
 }

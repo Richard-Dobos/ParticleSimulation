@@ -7,7 +7,7 @@ namespace Core::Engine
 {
 	EntityID Scene::createEntity()
 	{
-		EntityID entity = m_Ecs.CreateEntity();
+		EntityID entity = m_ECS.CreateEntity();
 
 		m_EntityList.push_back(entity);
 
@@ -16,14 +16,18 @@ namespace Core::Engine
 
 	void Scene::deleteEntity(EntityID entity)
 	{
-		for (uint64_t i = 0; i < m_EntityList.size(); i++)
+		if (!m_EntityList.empty())
 		{
-			if (m_EntityList[i] == entity)
+			for (uint64_t i = 0; i < m_EntityList.size(); i++)
 			{
-				m_DeletedEntities.push_back(entity);
-				std::swap(m_EntityList[i], m_EntityList.back());
-				
-				break;
+				if (m_EntityList[i] == entity)
+				{
+					m_DeletedEntities.push_back(entity);
+					std::swap(m_EntityList[i], m_EntityList.back());
+					m_EntityList.pop_back();
+
+					break;
+				}
 			}
 		}
 	}
@@ -34,6 +38,8 @@ namespace Core::Engine
 
 	void Scene::updateScene()
 	{
+		//m_MainThread = std::thread(&Scene::updateEntities, this);
+		//m_RenderThread = std::thread(&Scene::sceneRenderPass, this);
 		updateEntities();
 		sceneRenderPass();
 	}
@@ -46,7 +52,7 @@ namespace Core::Engine
 
 		uint32_t quadsToDraw = 0;
 	
-		m_Ecs.ForEach<Transform, Color>([&](Transform transform, Color color)
+		m_ECS.ForEach<Transform, Color>([&](Transform transform, Color color)
 		{
 			m_Renderer.DrawQuad(transform, color);
 			quadsToDraw++;
@@ -59,14 +65,19 @@ namespace Core::Engine
 
 	inline void Scene::updateEntities()
 	{
-		for (EntityID entity : m_DeletedEntities)
-		{
-			 m_Ecs.DeleteEntity(entity);
-		}
-
 		if (!m_DeletedEntities.empty())
 		{
+			for (EntityID entity : m_DeletedEntities)
+			{
+				m_ECS.DeleteEntity(entity);
+			}
+
 			m_DeletedEntities.clear();
+		}
+
+		for (const std::function<void()>& system : m_Systems)
+		{
+			system();
 		}
 	}
 
@@ -100,6 +111,11 @@ namespace Core::Engine
 		}
 	}
 
+	void Scene::addSystem(const std::function<void()>& systemFunction)
+	{
+		m_Systems.emplace_back(systemFunction);
+	}
+
 	const size_t Scene::getSizeB() const
 	{
 		size_t sceneSize = 0;
@@ -110,5 +126,10 @@ namespace Core::Engine
 	uint64_t Scene::getEntityCount() const
 	{
 		return m_EntityList.size();
+	}
+
+	std::vector<EntityID> Scene::getEntityList() const
+	{
+		return m_EntityList;
 	}
 }
