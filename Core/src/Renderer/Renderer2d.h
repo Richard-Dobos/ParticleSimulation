@@ -26,6 +26,7 @@ namespace Core::Renderer
 		void flush() const;
 
 		void DrawQuad(const Engine::Transform& transform, const Engine::Color& color);
+		void DrawQuads(const Engine::Transform* transform, const Engine::Color* color, uint32_t numberOfQuads);
 
 	public:
 		uint16_t drawCalls = 0;

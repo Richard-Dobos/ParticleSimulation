@@ -70,8 +70,3 @@
 #define MAGNETA_BACKGROUND	"\033[45m"
 #define CYAN_BACKGROUND		"\033[46m"
 #define WHITE_BACKGROUND	"\033[47m"
-
-namespace Core
-{
-	using EntityID = uint64_t;
-}

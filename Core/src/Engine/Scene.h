@@ -6,9 +6,11 @@
 #include <functional>
 #include <unordered_map>
 
+
 #include "Core.h"
 
-#include "ECS.h"
+#include "entity/registry.hpp"
+
 #include "Camera.h"
 #include "Utils/Shader.h"
 #include "Utils/Timer.h"
@@ -21,46 +23,47 @@ namespace Core::Engine
 {
 	class CORE_API Scene
 	{
+		using System = std::function<void()>;
+
 	public:
 		Scene(std::string sceneName)
 			:m_SceneName(sceneName) {}
 		~Scene() = default;
 
-		EntityID createEntity();
-		void deleteEntity(EntityID entity);
+		entt::entity createEntity();
+		void deleteEntity(entt::entity entity);
 		
 		void switchMainCamera(Camera2d& camera);
 		
 		void addShader(Utils::Shader& shader);
+		void addSystem(const System& ECSSystem);
 		void changeActiveShader(uint32_t shaderID);
 
 		void updateScene();
 
-		const size_t getSizeB() const;
 		uint64_t getEntityCount() const;
-		std::vector<EntityID> getEntityList() const;
+		std::vector<entt::entity> getEntityList() const;
 
-		ECS& getECS() { return m_ECS; }
-
-		void addSystem(const std::function<void()>& systemFunction);
+		entt::registry& getRegistry() { return m_Registry; }
+		Utils::ThreadDispatcher& getThreadDispatcher() { return m_ThreadDispatcher; }
 
 	private:
 		inline void sceneRenderPass();
 		inline void updateEntities();
 
 	private:
-		ECS m_ECS;
+		entt::registry m_Registry;
 
 		uint32_t m_ActiveShaderID = 0;
-
 		std::string m_SceneName;
 
+		Utils::ThreadDispatcher m_ThreadDispatcher;
 		Renderer::Renderer2d m_Renderer;
 		Engine::Camera2d* m_MainCamera;
 
-		std::vector<EntityID> m_EntityList;
-		std::vector<EntityID> m_DeletedEntities;
-		std::vector<std::function<void()>> m_Systems;
-		std::unordered_map<uint32_t, Core::Utils::Shader*> m_Shaders;
+		std::vector<entt::entity> m_EntityList;
+		std::vector<entt::entity> m_DeletedEntities;
+		std::vector<System> m_Systems;
+		std::unordered_map<uint32_t, Utils::Shader*> m_Shaders;
 	};
 }

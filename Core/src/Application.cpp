@@ -31,14 +31,14 @@ namespace Core
                 uint8_t g = static_cast<uint8_t>(std::rand() % 256);
                 uint8_t b = static_cast<uint8_t>(std::rand() % 256);
 
-                EntityID et = currentScene.createEntity();
+                entt::entity entity = currentScene.createEntity();
 
 				float squareWidth = window.getWindowProperties()->Width / numberOfQuadsHor;
 				float squareHeight = window.getWindowProperties()->Height / numberOfQuadsVer;
 
-                currentScene.getECS().Add<Engine::Color>(et, Engine::Color{ r, g, b, 255 });
-                currentScene.getECS().Add<Engine::Transform>(et, Engine::Transform{ { x * squareWidth, y * squareHeight, 0}, {squareWidth, squareHeight, 0}, 0.0f});
-                currentScene.getECS().Add<Engine::Render>(et, Engine::Render{});
+                currentScene.getRegistry().emplace<Engine::Transform>(entity, Engine::Transform{ { x * squareWidth, y * squareHeight, 0}, {squareWidth, squareHeight, 0}, 0.0f });
+                currentScene.getRegistry().emplace<Engine::Color>(entity, Engine::Color{ r, g, b, 255 });
+                currentScene.getRegistry().emplace<Engine::Render>(entity, Engine::Render{});
             }
         }
     }
@@ -57,8 +57,6 @@ namespace Core
 
         Utils::Shader defaultShader(vertShaderPath.c_str(), fragShaderPath.c_str());
         
-        Utils::ThreadDispatcher tr(36);
-
         Engine::Scene m_CurrentScene("Main Scene");
         Engine::Camera2d mainCamera(Engine::Transform({ 0.0f, 0.0f, 0.0f }), RESOLUTION[0], RESOLUTION[1], coreWindow.getWindowProperties()->AspectRatio, -1.0f, 1.0f);
 
@@ -70,10 +68,6 @@ namespace Core
 
         int numberOfQuadsHor = 1280;
         int numberOfQuadsVer = 720;
-
-		m_CurrentScene.getECS().RegisterComponent<Engine::Transform>();
-		m_CurrentScene.getECS().RegisterComponent<Engine::Color>();
-		m_CurrentScene.getECS().RegisterComponent<Engine::Render>();
 
 		generateSquares(coreWindow, m_CurrentScene, numberOfQuadsHor, numberOfQuadsVer);
 
@@ -100,14 +94,14 @@ namespace Core
 
                 if (fizzEffect)
                 {
-                    for (EntityID entity : m_CurrentScene.getEntityList())
+                    for (entt::entity entity : m_CurrentScene.getEntityList())
                     {
                         m_CurrentScene.deleteEntity(entity);
                     }
 
                     generateSquares(coreWindow, m_CurrentScene, numberOfQuadsHor, numberOfQuadsVer);
                 }
-				
+
                 m_CurrentScene.updateScene();
 
                 glfwSwapBuffers(coreWindow.getGLFWwindow());

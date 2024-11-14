@@ -36,8 +36,9 @@
 #endif
 
 
-namespace Core::Engine 
+namespace Core::Engine
 {
+	using EntityID = uint32_t;
 	static constexpr EntityID NULL_ENTITY = std::numeric_limits<EntityID>::max();
 	constexpr size_t MAX_ENTITIES = NULL_ENTITY;
 	constexpr size_t MAX_COMPONENTS = 64;

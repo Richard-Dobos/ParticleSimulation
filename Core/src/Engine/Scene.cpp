@@ -5,16 +5,16 @@
 
 namespace Core::Engine
 {
-	EntityID Scene::createEntity()
+	entt::entity Scene::createEntity()
 	{
-		EntityID entity = m_ECS.CreateEntity();
+		entt::entity entity = m_Registry.create();
 
 		m_EntityList.push_back(entity);
 
 		return entity;
 	}
 
-	void Scene::deleteEntity(EntityID entity)
+	void Scene::deleteEntity(entt::entity entity)
 	{
 		if (!m_EntityList.empty())
 		{
@@ -38,8 +38,11 @@ namespace Core::Engine
 
 	void Scene::updateScene()
 	{
-		//m_MainThread = std::thread(&Scene::updateEntities, this);
-		//m_RenderThread = std::thread(&Scene::sceneRenderPass, this);
+		for (const System& system : m_Systems)
+		{
+			m_ThreadDispatcher.dispatchTask(system);
+		}
+
 		updateEntities();
 		sceneRenderPass();
 	}
@@ -47,12 +50,10 @@ namespace Core::Engine
 	inline void Scene::sceneRenderPass()
 	{
 		m_Renderer.beginBatch();
-		
-		std::vector<uint8_t> renderingData;
 
 		uint32_t quadsToDraw = 0;
-	
-		m_ECS.ForEach<Transform, Color>([&](Transform transform, Color color)
+
+		m_Registry.view<Transform, Color>().each([&](const Transform& transform, const Color& color)
 		{
 			m_Renderer.DrawQuad(transform, color);
 			quadsToDraw++;
@@ -61,15 +62,15 @@ namespace Core::Engine
 		m_Renderer.endBatch();
 
 		m_Renderer.drawCalls = 0;
-	}	
+	}
 
 	inline void Scene::updateEntities()
 	{
 		if (!m_DeletedEntities.empty())
 		{
-			for (EntityID entity : m_DeletedEntities)
+			for (entt::entity entity : m_DeletedEntities)
 			{
-				m_ECS.DeleteEntity(entity);
+				m_Registry.destroy(entity);
 			}
 
 			m_DeletedEntities.clear();
@@ -111,16 +112,9 @@ namespace Core::Engine
 		}
 	}
 
-	void Scene::addSystem(const std::function<void()>& systemFunction)
+	void Scene::addSystem(const System& ECSSystem)
 	{
-		m_Systems.emplace_back(systemFunction);
-	}
-
-	const size_t Scene::getSizeB() const
-	{
-		size_t sceneSize = 0;
-
-		return sceneSize;
+		m_Systems.emplace_back(ECSSystem);
 	}
 
 	uint64_t Scene::getEntityCount() const
@@ -128,7 +122,7 @@ namespace Core::Engine
 		return m_EntityList.size();
 	}
 
-	std::vector<EntityID> Scene::getEntityList() const
+	std::vector<entt::entity> Scene::getEntityList() const
 	{
 		return m_EntityList;
 	}

@@ -91,24 +91,26 @@ namespace Core::Renderer
 			beginBatch();
 		}		
 
+		uint32_t packedColor = color.r << 24 | color.g << 16 | color.b << 8 | color.a;
+
 		// Bottom Left Corner Vertex
 		s_Data.QuadVertexPtr->Pos = transform.pos;
-		s_Data.QuadVertexPtr->Color = color.r << 24 | color.g << 16 | color.b << 8 | color.a;
+		s_Data.QuadVertexPtr->Color = packedColor;
 		s_Data.QuadVertexPtr++;
 
 		// Bottom Right Corner Vertex
 		s_Data.QuadVertexPtr->Pos = { transform.pos.x + transform.scale.x, transform.pos.y, transform.scale.z };
-		s_Data.QuadVertexPtr->Color = color.r << 24 | color.g << 16 | color.b << 8 | color.a;
+		s_Data.QuadVertexPtr->Color = packedColor;
 		s_Data.QuadVertexPtr++;
 
 		// Top Right Corner Vertex
 		s_Data.QuadVertexPtr->Pos = { transform.pos.x + transform.scale.x, transform.pos.y + transform.scale.y, transform.pos.z };
-		s_Data.QuadVertexPtr->Color = color.r << 24 | color.g << 16 | color.b << 8 | color.a;
+		s_Data.QuadVertexPtr->Color = packedColor;
 		s_Data.QuadVertexPtr++;
 
 		//Top Left Corner Vertex
 		s_Data.QuadVertexPtr->Pos = { transform.pos.x, transform.pos.y + transform.scale.y, transform.pos.z };
-		s_Data.QuadVertexPtr->Color = color.r << 24 | color.g << 16 | color.b << 8 | color.a;
+		s_Data.QuadVertexPtr->Color = packedColor;
 		s_Data.QuadVertexPtr++;
 
 		s_Data.IndexCount += 6;
