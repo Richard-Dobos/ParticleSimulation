@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Core_Config.h"
+
 #include <format>
 #include <iostream>
 
@@ -11,9 +13,6 @@
 #else
 	#define CORE_API __declspec(dllimport)
 #endif
-
-#define DEBUG_LOG_ENABLE
-#define DEBUG_LOG_PERFORMANCE
 
 #if defined (DEBUG_LOG_TRACE) || defined (DEBUG_LOG_ENABLE)
 	#define LOG_TRACE(...) std::cout << WHITE << "[TRACE]: " << std::format(__VA_ARGS__, __VA_ARGS__) << '\n' << RESET

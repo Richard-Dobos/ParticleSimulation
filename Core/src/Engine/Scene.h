@@ -1,11 +1,11 @@
 #pragma once
 
+#include <mutex>
 #include <memory>
 #include <vector>
 #include <string>
 #include <functional>
 #include <unordered_map>
-
 
 #include "Core.h"
 
@@ -64,6 +64,9 @@ namespace Core::Engine
 		std::vector<entt::entity> m_EntityList;
 		std::vector<entt::entity> m_DeletedEntities;
 		std::vector<System> m_Systems;
+
+		std::mutex m_RenderDataMutex;
+
 		std::unordered_map<uint32_t, Utils::Shader*> m_Shaders;
 	};
 }

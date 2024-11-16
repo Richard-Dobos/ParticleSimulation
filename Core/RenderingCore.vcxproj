@@ -122,7 +122,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;RENDERING_CORE_API_EXPORT_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\vendors\GLM\;$(SolutionDir)$(ProjectName)\src;$(SolutionDir)$(ProjectName)\vendors\GLEW\include;$(SolutionDir)$(ProjectName)\vendors\GLFW\include\GLFW;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\vendors\glm;$(SolutionDir)$(ProjectName)\src;$(SolutionDir)$(ProjectName)\vendors\GLEW\include;$(SolutionDir)$(ProjectName)\vendors\GLFW\include\GLFW;$(SolutionDir)$(ProjectName)\vendors\entt-3.14.0\single_include\entt;$(SolutionDir)$(ProjectName)\vendors\entt-3.14.0\src\entt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -145,7 +145,7 @@ xcopy /y /d "$(SolutionDir)\$(ProjectName)\vendors\\GLEW\lib\glew32.dll" "$(OutD
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;RENDERING_CORE_API_EXPORT_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\vendors\glm;$(SolutionDir)$(ProjectName)\src;$(SolutionDir)$(ProjectName)\vendors\GLEW\include;$(SolutionDir)$(ProjectName)\vendors\GLFW\include\GLFW;$(SolutionDir)$(ProjectName)\\vendors\entt-3.14.0\single_include\entt;$(SolutionDir)$(ProjectName)\\vendors\entt-3.14.0\src\entt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\vendors\glm;$(SolutionDir)$(ProjectName)\src;$(SolutionDir)$(ProjectName)\vendors\GLEW\include;$(SolutionDir)$(ProjectName)\vendors\GLFW\include\GLFW;$(SolutionDir)$(ProjectName)\vendors\entt-3.14.0\single_include\entt;$(SolutionDir)$(ProjectName)\vendors\entt-3.14.0\src\entt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -178,6 +178,7 @@ xcopy /y /d "$(SolutionDir)\$(ProjectName)\vendors\\GLEW\lib\glew32.dll" "$(OutD
   <ItemGroup>
     <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\Core.h" />
+    <ClInclude Include="src\Core_Config.h" />
     <ClInclude Include="src\Engine\Camera.h" />
     <ClInclude Include="src\Engine\Components\Components.h" />
     <ClInclude Include="src\Engine\Scene.h" />

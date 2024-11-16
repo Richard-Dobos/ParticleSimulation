@@ -40,6 +40,8 @@ namespace Core::Utils
 			workerThreadsToDispatch = 8;
 		}
 
+		LOG_INFO("Thread Dispacher created with {} worker threads.", workerThreadsToDispatch);
+
 		for (uint16_t i = 0; i < workerThreadsToDispatch; i++)
 		{
 			m_WorkerThreads.emplace_back([this] { workerThread(); });

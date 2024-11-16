@@ -116,6 +116,42 @@ namespace Core::Renderer
 		s_Data.IndexCount += 6;
 	}
 
+	void Renderer2d::DrawQuads(const Engine::Transform* transform, const Engine::Color* color, uint32_t numberOfQuads)
+	{
+		for (uint32_t i = 0; i < numberOfQuads; i++)
+		{
+			if (s_Data.IndexCount >= s_Data.IndexCountPerBatch)
+			{
+				endBatch();
+				beginBatch();
+			}
+
+			uint32_t packedColor = color[i].r << 24 | color[i].g << 16 | color[i].b << 8 | color[i].a;
+
+			// Bottom Left Corner Vertex
+			s_Data.QuadVertexPtr->Pos = transform[i].pos;
+			s_Data.QuadVertexPtr->Color = packedColor;
+			s_Data.QuadVertexPtr++;
+
+			// Bottom Right Corner Vertex
+			s_Data.QuadVertexPtr->Pos = { transform[i].pos.x + transform[i].scale.x, transform[i].pos.y, transform[i].scale.z };
+			s_Data.QuadVertexPtr->Color = packedColor;
+			s_Data.QuadVertexPtr++;
+
+			// Top Right Corner Vertex
+			s_Data.QuadVertexPtr->Pos = { transform[i].pos.x + transform[i].scale.x, transform[i].pos.y + transform[i].scale.y, transform[i].pos.z };
+			s_Data.QuadVertexPtr->Color = packedColor;
+			s_Data.QuadVertexPtr++;
+
+			//Top Left Corner Vertex
+			s_Data.QuadVertexPtr->Pos = { transform[i].pos.x, transform[i].pos.y + transform[i].scale.y, transform[i].pos.z };
+			s_Data.QuadVertexPtr->Color = packedColor;
+			s_Data.QuadVertexPtr++;
+
+			s_Data.IndexCount += 6;
+		}
+	}
+
 	void Renderer2d::flush() const 
 	{
 		uint32_t size = (uint8_t*)s_Data.QuadVertexPtr - (uint8_t*)s_Data.QuadVertexBasePtr;

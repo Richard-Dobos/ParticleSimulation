@@ -49,11 +49,15 @@ namespace Core::Engine
 	
 	inline void Scene::sceneRenderPass()
 	{
+		std::scoped_lock<std::mutex> lock(m_RenderDataMutex);
+		
+		auto view = m_Registry.view<Transform, Color, Render>();
+
 		m_Renderer.beginBatch();
 
 		uint32_t quadsToDraw = 0;
 
-		m_Registry.view<Transform, Color>().each([&](const Transform& transform, const Color& color)
+		view.each([&](const Transform& transform, const Color& color)
 		{
 			m_Renderer.DrawQuad(transform, color);
 			quadsToDraw++;
@@ -74,11 +78,6 @@ namespace Core::Engine
 			}
 
 			m_DeletedEntities.clear();
-		}
-
-		for (const std::function<void()>& system : m_Systems)
-		{
-			system();
 		}
 	}
 
