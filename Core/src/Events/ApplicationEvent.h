@@ -38,4 +38,27 @@ namespace Core::Event
 		EVENT_CLASS_TYPE(WindowClose);
 		EVENT_CLASS_CATEGORY(EventCategoryApplication);
 	};
+
+	class WindowFocusEvent : public Event
+	{
+	public:
+		WindowFocusEvent(int focused)
+			:focused(focused) {}
+
+		bool getFocused() const { return focused; }
+
+		std::string toString() const override
+		{
+			std::stringstream ss;
+			ss << std::format("WindowFocusEvent: {}", focused);
+			
+			return ss.str();
+		}
+
+		EVENT_CLASS_TYPE(WindowFocus);
+		EVENT_CLASS_CATEGORY(EventCategoryApplication);
+
+	private:
+		int focused;
+	};
 }
