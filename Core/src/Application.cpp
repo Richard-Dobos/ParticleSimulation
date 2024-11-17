@@ -102,7 +102,7 @@ namespace Core
 
                 if (shuffle)
                 {
-					m_CurrentScene.getThreadDispatcher().dispatchTask([&]() { fizzEffect(coreWindow, m_CurrentScene, numberOfQuadsHor, numberOfQuadsVer); });
+					fizzEffect(coreWindow, m_CurrentScene, numberOfQuadsHor, numberOfQuadsVer);
                 }
 
                 m_CurrentScene.updateScene();

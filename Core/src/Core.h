@@ -34,7 +34,7 @@
 #else
 	#define LOG_ERROR(...)
 #endif
-#if defined (DEBUG_LOG_PERFORMANCE)
+#ifdef DEBUG_LOG_PERFORMANCE
 	#define LOG_PERFORMANCE(...) std::cout << CYAN << "[PERFORMANCE]: " << std::format(__VA_ARGS__, __VA_ARGS__) << '\r' << RESET
 #else
 	#define LOG_PERFORMANCE(...)
