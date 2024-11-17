@@ -35,6 +35,8 @@ namespace Core::Window
 		std::string OpenGLVersion;
 		std::string GLSLVersion;
 
+		const char* WindowAppIconFilePath = nullptr;
+
 		EventCallbackFn windowEventCallbackFn;
 
 		WindowProperties(std::string const& name = "Default Window Handle", uint16_t windowWidth = 720, uint16_t windowHeight = 480, bool vsync = true)
@@ -45,13 +47,19 @@ namespace Core::Window
 	{
 	public:
 		Window(uint16_t windowWidth, uint16_t windowHeight, const std::string& name, bool vsync);
-		Window(const WindowProperties& windowProperties) : Window(windowProperties.Width, windowProperties.Height, windowProperties.Name, windowProperties.Vsync) {}
+		Window(const WindowProperties& windowProperties);
 		~Window();
 
 		GLFWwindow* getGLFWwindow() const { return m_GLFWWindow; }
 		const WindowProperties* getWindowProperties() const;
 
+		void setGLFWwindowName(const char* windowTitle);
+		void setWindowAppIcon(const char* iconFilePath);
 		void setEventCallback(const EventCallbackFn& callback) { m_WindowProperties.windowEventCallbackFn = callback; }
+
+	private:
+		void init();
+		void setGLFWCallbacks();
 
 	private:
 		WindowProperties m_WindowProperties;
