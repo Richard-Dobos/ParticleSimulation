@@ -6,8 +6,8 @@
 
 #include "Core.h"
 
-#include "glm.hpp"
 #include "glew.h"
+#include "glm.hpp"
 #include "Buffer.h"
 #include "VertexArray.h"
 #include "Utils/Shader.h"
@@ -25,17 +25,17 @@ namespace Core::Renderer
 		void endBatch();
 		void flush() const;
 
-		void DrawQuad(const Engine::Transform& transform, const Engine::Color& color);
-		void DrawQuads(const Engine::Transform* transform, const Engine::Color* color, uint32_t numberOfQuads);
+		void DrawQuad(const Engine::Components::Transform& transform, const Engine::Components::Color& color);
+		void DrawQuads(const Engine::Components::Transform* transform, const Engine::Components::Color* color, uint32_t numberOfQuads);
 
 	public:
-		uint16_t drawCalls = 0;
+		uint16_t m_DrawCalls = 0;
 
 	private:
 		BufferLayout m_BufferLayout;
 	};
 
-	class CORE_API InstancedRenderer2d
+	class InstancedRenderer2d
 	{
 	public:
 		InstancedRenderer2d();

@@ -5,6 +5,7 @@
 #include <unordered_map>
 
 #include "Core.h"
+
 #include "glew.h"
 #include "glm.hpp"
 
@@ -33,13 +34,14 @@ namespace Core::Utils
 		Shader(const std::string& vertexShaderCode, const std::string& fragmentShaderCode);
 		~Shader();
 
-		static void bind(uint32_t shaderID) { glUseProgram(shaderID); }
-		static void unBind() { glUseProgram(0); }
+		inline static void bind(uint32_t shaderID);
+		inline static void unBind();
 
 		void setUniformVector(const std::string& name, ShaderUniformDataType uniformDataType, const void* value, uint32_t count);
 		void setUniformMat4x4(const std::string& name, const glm::mat4& matrix);
 
 		uint32_t getShaderProgramID() const;
+
 	private:
 		GLint getUniformLocation(const std::string& name);
 
@@ -55,6 +57,7 @@ namespace Core::Utils
 		std::string m_ComputeShaderPath;
 		std::string m_VertexShaderSource;
 		std::string m_FragmentShaderSource;
+
 		uint32_t m_ShaderProgramID;
 	};
 

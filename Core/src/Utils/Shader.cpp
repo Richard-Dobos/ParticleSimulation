@@ -1,6 +1,5 @@
 #include <fstream>
 #include <sstream>
-#include <cstdarg>
 
 #include "Shader.h"
 #include "glm.hpp"
@@ -150,12 +149,12 @@ namespace Core::Utils
 		return location;
 	}
 
-	void bind(uint32_t shaderID)
+	void Shader::bind(uint32_t shaderID)
 	{
 		glUseProgram(shaderID);
 	}
 
-	void unBind()
+	void Shader::unBind()
 	{
 		glUseProgram(0);
 	}

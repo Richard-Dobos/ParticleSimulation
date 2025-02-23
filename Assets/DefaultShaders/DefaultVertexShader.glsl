@@ -15,7 +15,7 @@ void main()
 					float(a_Color >> 16 & 0xFF) / 255,
 					float(a_Color >> 8 & 0xFF) / 255,
 					float(a_Color & 0xFF) / 255
-					);
+				);
 
 	gl_Position = u_Proj * u_View * vec4(a_Pos, 1.0);
 }

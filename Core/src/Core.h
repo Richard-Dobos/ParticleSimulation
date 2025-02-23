@@ -1,12 +1,9 @@
 #pragma once
 
-#include "Core_Config.h"
+#include "CoreConfig.h"
 
 #include <format>
 #include <iostream>
-
-#include "glew.h"
-#include "glfw3.h"
 
 #if RENDERING_CORE_API_EXPORT_DLL
 	#define CORE_API __declspec(dllexport)
@@ -69,3 +66,4 @@
 #define MAGNETA_BACKGROUND	"\033[45m"
 #define CYAN_BACKGROUND		"\033[46m"
 #define WHITE_BACKGROUND	"\033[47m"
+

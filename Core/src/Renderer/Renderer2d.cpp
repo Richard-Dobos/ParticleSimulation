@@ -1,5 +1,6 @@
 #include "Renderer2d.h"
 
+#include "glew.h"
 #include "gtc/matrix_transform.hpp"
 
 namespace Core::Renderer
@@ -12,7 +13,7 @@ namespace Core::Renderer
 
 	struct RendererStorage
 	{
-		const uint32_t QuadBatchSize = 35000;
+		const uint32_t QuadBatchSize = 50000;
 		const uint32_t VertexCountPerBatch = QuadBatchSize * 4;
 		const uint32_t IndexCountPerBatch = QuadBatchSize * 6;
 
@@ -28,6 +29,9 @@ namespace Core::Renderer
 
 	Renderer2d::Renderer2d()
 	{
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LESS);
+
 		m_BufferLayout =
 		{
 			{"Pos", ShaderDataType::Float3, false},
@@ -68,6 +72,7 @@ namespace Core::Renderer
 	{
 		glUnmapBuffer(GL_ARRAY_BUFFER);
 		glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
+		glDisable(GL_DEPTH_TEST);
 	}
 
 	void Renderer2d::endBatch()
@@ -80,10 +85,10 @@ namespace Core::Renderer
 		s_Data.QuadVertexPtr = s_Data.QuadVertexBasePtr;
 		s_Data.IndexCount = 0;
 
-		drawCalls += 1;
+		m_DrawCalls += 1;
 	}
 
-	void Renderer2d::DrawQuad(const Engine::Transform& transform, const Engine::Color& color)
+	void Renderer2d::DrawQuad(const Engine::Components::Transform& transform, const Engine::Components::Color& color)
 	{
 		if (s_Data.IndexCount >= s_Data.IndexCountPerBatch)
 		{
@@ -116,12 +121,15 @@ namespace Core::Renderer
 		s_Data.IndexCount += 6;
 	}
 
-	void Renderer2d::DrawQuads(const Engine::Transform* transform, const Engine::Color* color, uint32_t numberOfQuads)
+	void Renderer2d::DrawQuads(const Engine::Components::Transform* transform, const Engine::Components::Color* color, uint32_t numberOfQuads)
 	{
+		m_DrawCalls += 1;
+		
 		for (uint32_t i = 0; i < numberOfQuads; i++)
 		{
 			if (s_Data.IndexCount >= s_Data.IndexCountPerBatch)
 			{
+				m_DrawCalls += 1;
 				endBatch();
 				beginBatch();
 			}

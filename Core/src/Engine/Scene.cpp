@@ -1,15 +1,32 @@
 #include "Scene.h"
 
-#include "glfw3.h"
+#include "glew.h"
+#include "entity/snapshot.hpp"
 #include "gtc/matrix_transform.hpp"
 
 namespace Core::Engine
 {
+	Scene::Scene(std::string sceneName)
+		:m_SceneName(sceneName) 
+	{
+	}
+
 	entt::entity Scene::createEntity()
 	{
 		entt::entity entity = m_Registry.create();
 
 		m_EntityList.push_back(entity);
+
+		return entity;
+	}
+
+	entt::entity Scene::createEntity(std::string groupName)
+	{
+		entt::entity entity = m_Registry.create();
+
+		m_EntityList.push_back(entity);
+
+		addEntityToGroup(entity, groupName);
 
 		return entity;
 	}
@@ -31,6 +48,23 @@ namespace Core::Engine
 			}
 		}
 	}
+
+	void Scene::addEntityToGroup(entt::entity entity, std::string groupName)
+	{
+		m_Groups[groupName].emplace_back(entity);
+	}
+
+	std::vector<entt::entity> Scene::getEntityGroup(std::string groupName)
+	{
+		if (!m_Groups.contains(groupName))
+		{
+			LOG_WARN("Entity Group ({}) couldn't be found.", groupName);
+			return {};
+		}
+
+		return m_Groups[groupName];
+	}
+
 	void Scene::switchMainCamera(Camera2d& camera)
 	{
 		m_MainCamera = &camera;
@@ -38,6 +72,18 @@ namespace Core::Engine
 
 	void Scene::updateScene()
 	{
+		std::chrono::high_resolution_clock::time_point frameStartTime = std::chrono::high_resolution_clock::now();
+#ifdef PERFORMANCE_PROFILER
+
+		for (const System& system : m_Systems)
+		{
+			m_ThreadDispatcher.dispatchTask(system);
+		}
+
+		m_DefaultSceneProfiler.profile("updateEntities", [this]() { updateEntities();	});
+		m_DefaultSceneProfiler.profile("SceneRenderPass", [this]() { sceneRenderPass(); });
+
+#else
 		for (const System& system : m_Systems)
 		{
 			m_ThreadDispatcher.dispatchTask(system);
@@ -45,31 +91,40 @@ namespace Core::Engine
 
 		updateEntities();
 		sceneRenderPass();
+#endif
+		std::chrono::high_resolution_clock::time_point frameEndTime = std::chrono::high_resolution_clock::now();
+
+		m_DeltaTime = std::chrono::duration<double, std::milli>(frameEndTime - frameStartTime).count();
 	}
-	
-	inline void Scene::sceneRenderPass()
+
+	void Scene::sceneRenderPass()
 	{
-		std::scoped_lock<std::mutex> lock(m_RenderDataMutex);
-		
-		auto view = m_Registry.view<Transform, Color, Render>();
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		auto view = m_Registry.view<Engine::Components::Transform, Engine::Components::Color, Engine::Components::Render>();
+
+		uint32_t quadsToDraw = view.size_hint();
+
+		if (quadsToDraw < 1)
+		{
+			glFlush();
+			return;
+		}
 
 		m_Renderer.beginBatch();
-
-		uint32_t quadsToDraw = 0;
-
-		view.each([&](const Transform& transform, const Color& color)
-		{
-			m_Renderer.DrawQuad(transform, color);
-			quadsToDraw++;
-		});
-
+		view.each([&](const Components::Transform& transform, const Components::Color& color)
+			{
+				m_Renderer.DrawQuad(transform, color);
+			});
 		m_Renderer.endBatch();
-
-		m_Renderer.drawCalls = 0;
+			
+		glFlush();
 	}
 
-	inline void Scene::updateEntities()
+	void Scene::updateEntities()
 	{
+		
+
 		if (!m_DeletedEntities.empty())
 		{
 			for (entt::entity entity : m_DeletedEntities)
@@ -79,8 +134,10 @@ namespace Core::Engine
 
 			m_DeletedEntities.clear();
 		}
-	}
 
+		//copyRegistry(m_Registry, m_RenderingRegistry);
+	}
+	
 	void Scene::addShader(Utils::Shader& shader)
 	{
 		if (m_ActiveShaderID == 0)
@@ -96,9 +153,14 @@ namespace Core::Engine
 		m_Shaders[shader.getShaderProgramID()] = &shader;
 	}
 
+	double Scene::getDeltaTime()
+	{
+		return m_DeltaTime;
+	}
+
 	void Scene::changeActiveShader(uint32_t shaderID)
 	{
-		if (m_ActiveShaderID != shaderID)
+		//if (m_ActiveShaderID != shaderID)
 		{
 			Utils::Shader* shader = m_Shaders.at(shaderID);
 

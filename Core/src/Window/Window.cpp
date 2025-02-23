@@ -1,5 +1,7 @@
 #include "Window.h"
 
+#include "Events/Event.h"
+
 namespace Core::Window
 {
 	Window::Window(uint16_t WindowWidth, uint16_t WindowHeight, const std::string& name, bool vsync)
@@ -9,9 +11,9 @@ namespace Core::Window
 		m_WindowProperties.AspectRatio = (float)WindowWidth / (float)WindowHeight;
 		m_WindowProperties.Name = name;
 		m_WindowProperties.Vsync = vsync;
-
+		m_WindowProperties.WindowEventCallbackFn = std::bind(Event::onEvent, std::placeholders::_1);
+		
 		init();
-
 		setGLFWCallbacks();
 	}
 
@@ -35,11 +37,11 @@ namespace Core::Window
 		{
 			WindowProperties* windowProperties = (WindowProperties*)glfwGetWindowUserPointer(window);
 			Event::WindowResizeEvent event(width, height);
-
+			
 			windowProperties->Width = width;
 			windowProperties->Height = height;
 			windowProperties->AspectRatio = (float)width / (float)height;
-			windowProperties->windowEventCallbackFn(event);
+			windowProperties->WindowEventCallbackFn(event);
 
 			glViewport(0, 0, width, height);
 		});
@@ -48,14 +50,14 @@ namespace Core::Window
 		{
 			WindowProperties* windowProperties = (WindowProperties*)glfwGetWindowUserPointer(window);
 			Event::WindowCloseEvent event;
-			windowProperties->windowEventCallbackFn(event);
+			windowProperties->WindowEventCallbackFn(event);
 		});
 
 		glfwSetWindowFocusCallback(m_GLFWWindow, [](GLFWwindow* window, int focused)
 		{
 			WindowProperties* windowProperties = (WindowProperties*)glfwGetWindowUserPointer(window);
 			Event::WindowFocusEvent event(focused);
-			windowProperties->windowEventCallbackFn(event);
+			windowProperties->WindowEventCallbackFn(event);
 		});
 
 		glfwSetKeyCallback(m_GLFWWindow, [](GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -67,19 +69,19 @@ namespace Core::Window
 			case GLFW_PRESS:
 			{
 				Event::KeyPressedEvent event(key, 0);
-				windowProperties->windowEventCallbackFn(event);
+				windowProperties->WindowEventCallbackFn(event);
 				break;
 			}
 			case GLFW_RELEASE:
 			{
 				Event::KeyReleasedEvent event(key);
-				windowProperties->windowEventCallbackFn(event);
+				windowProperties->WindowEventCallbackFn(event);
 				break;
 			}
 			case GLFW_REPEAT:
 			{
 				Event::KeyPressedEvent event(key, 1);
-				windowProperties->windowEventCallbackFn(event);
+				windowProperties->WindowEventCallbackFn(event);
 				break;
 			}
 			}
@@ -89,7 +91,7 @@ namespace Core::Window
 		{
 			WindowProperties* windowProperties = (WindowProperties*)glfwGetWindowUserPointer(window);
 			Event::KeyTypedEvent event(keycode);
-			windowProperties->windowEventCallbackFn(event);
+			windowProperties->WindowEventCallbackFn(event);
 		});
 
 		glfwSetMouseButtonCallback(m_GLFWWindow, [](GLFWwindow* window, int button, int action, int mods)
@@ -100,13 +102,13 @@ namespace Core::Window
 			case GLFW_PRESS:
 			{
 				Event::MouseButtonPressedEvent event(button);
-				windowProperties->windowEventCallbackFn(event);
+				windowProperties->WindowEventCallbackFn(event);
 				break;
 			}
 			case GLFW_RELEASE:
 			{
 				Event::MouseButtonReleasedEvent event(button);
-				windowProperties->windowEventCallbackFn(event);
+				windowProperties->WindowEventCallbackFn(event);
 				break;
 			}
 			}
@@ -116,14 +118,14 @@ namespace Core::Window
 		{
 			WindowProperties* windowProperties = (WindowProperties*)glfwGetWindowUserPointer(window);
 			Event::MouseScrolledEvent event(xOffset, yOffset);
-			windowProperties->windowEventCallbackFn(event);
+			windowProperties->WindowEventCallbackFn(event);
 		});
 
 		glfwSetCursorPosCallback(m_GLFWWindow, [](GLFWwindow* window, double xPos, double yPos)
 		{
 			WindowProperties* windowProperties = (WindowProperties*)glfwGetWindowUserPointer(window);
 			Event::MouseMovedEvent event(xPos, yPos);
-			windowProperties->windowEventCallbackFn(event);
+			windowProperties->WindowEventCallbackFn(event);
 		});
 	}
 
@@ -150,7 +152,7 @@ namespace Core::Window
 
 		if (m_GLFWWindow)
 		{
-			LOG_INFO("GLFW Window Initialized\nName: {}\nWidth: {}\nHeight: {}\nScale: {}\nV-sync: {}", m_WindowProperties.Name, m_WindowProperties.Width, m_WindowProperties.Height, m_WindowProperties.AspectRatio, m_WindowProperties.Vsync);
+			LOG_INFO("GLFW Window Initialized\n\tName: {}\n\tWidth: {}\n\tHeight: {}\n\tScale: {}\n\tV-sync: {}", m_WindowProperties.Name, m_WindowProperties.Width, m_WindowProperties.Height, m_WindowProperties.AspectRatio, m_WindowProperties.Vsync);
 			glfwMakeContextCurrent(m_GLFWWindow);
 		}
 
@@ -166,11 +168,26 @@ namespace Core::Window
 			m_WindowProperties.OpenGLVersion = std::string((const char*)glGetString(GL_VERSION));
 			m_WindowProperties.GLSLVersion = std::string((const char*)glGetString(GL_SHADING_LANGUAGE_VERSION));
 
-			LOG_INFO("OpenGL Initialized\nGraphics Device: {}\nOpenGL Version: {}\nGLSL Version: {}", m_WindowProperties.GraphicsDevice, m_WindowProperties.OpenGLVersion, m_WindowProperties.GLSLVersion);
+			LOG_INFO("OpenGL Initialized\n\tGraphics Device: {}\n\tOpenGL Version: {}\n\tGLSL Version: {}", m_WindowProperties.GraphicsDevice, m_WindowProperties.OpenGLVersion, m_WindowProperties.GLSLVersion);
 		}
 
 		glfwSwapInterval(m_WindowProperties.Vsync);
 		glViewport(0, 0, m_WindowProperties.Width, m_WindowProperties.Height);
+	}
+
+	void Window::setEventCallback(const EventCallbackFn& event)
+	{
+		m_WindowProperties.WindowEventCallbackFn = event;
+	}
+
+	uint16_t* Window::getWindowHeightPtr()
+	{
+		return &m_WindowProperties.Height;
+	}
+
+	uint16_t* Window::getWindowWidthPtr()
+	{
+		return &m_WindowProperties.Width;
 	}
 
 	const WindowProperties* Window::getWindowProperties() const
@@ -194,6 +211,11 @@ namespace Core::Window
 		return glfwWindowShouldClose(window.getGLFWwindow());
 	}
 
+	void swapBuffers(const Window* window)
+	{
+		glfwSwapBuffers(window->getGLFWwindow());
+	}
+
 	void setGLFWWindowHint(int hint, int value)
 	{
 		glfwWindowHint(hint, value);
@@ -202,6 +224,11 @@ namespace Core::Window
 	void setGLFWCurrentContext(GLFWwindow* window)
 	{
 		glfwMakeContextCurrent(window);
+	}
+
+	void setGLFWCurrentContext(const Window* newWindowContext)
+	{
+		glfwMakeContextCurrent(newWindowContext->getGLFWwindow());
 	}
 
 	GLFWwindow* getGLFWCurrentContext()

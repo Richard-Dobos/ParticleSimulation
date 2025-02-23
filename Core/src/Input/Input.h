@@ -1,7 +1,7 @@
 #pragma once
 
+#include "Core.h"
 #include "KeyCodes.h"
-#include "Window/Window.h"
 
 namespace Core::Input
 {

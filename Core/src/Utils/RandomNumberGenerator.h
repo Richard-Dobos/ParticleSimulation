@@ -4,7 +4,7 @@
 
 namespace Core::Utils
 {
-    static uint64_t x = 123456789, y = 362436069, z = 521288629;
+    inline uint64_t x = 123456789, y = 362436069, z = 521288629;
 
     static uint64_t xorshf96()
     {          

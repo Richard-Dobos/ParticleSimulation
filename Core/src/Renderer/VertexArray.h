@@ -1,13 +1,6 @@
 #pragma once
 
-#include <vector>
-#include <memory>
-
 #include "Buffer.h"
-#include "Utils/Shader.h"
-
-#include "glew.h"
-#include "glm.hpp"
 
 namespace Core::Renderer
 {

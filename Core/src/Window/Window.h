@@ -24,7 +24,7 @@ namespace Core::Window
 
 	struct CORE_API WindowProperties
 	{
-		uint16_t Width;
+		uint16_t Width;	
 		uint16_t Height;
 
 		bool Vsync;
@@ -35,12 +35,12 @@ namespace Core::Window
 		std::string OpenGLVersion;
 		std::string GLSLVersion;
 
-		const char* WindowAppIconFilePath = nullptr;
+		std::string WindowAppIconFilePath;
 
-		EventCallbackFn windowEventCallbackFn;
-
+		EventCallbackFn WindowEventCallbackFn;
+		
 		WindowProperties(std::string const& name = "Default Window Handle", uint16_t windowWidth = 720, uint16_t windowHeight = 480, bool vsync = true)
-			:Width(windowWidth), Height(windowHeight), Vsync(vsync), AspectRatio((float)windowWidth / (float)windowHeight), Name(name) {}
+			:Width(windowWidth), Height(windowHeight), Vsync(vsync), AspectRatio((float)windowWidth / (float)windowHeight), Name(name) {} 
 	};
 
 	class CORE_API Window
@@ -55,8 +55,10 @@ namespace Core::Window
 
 		void setGLFWwindowName(const char* windowTitle);
 		void setWindowAppIcon(const char* iconFilePath);
-		void setEventCallback(const EventCallbackFn& callback) { m_WindowProperties.windowEventCallbackFn = callback; }
+		void setEventCallback(const EventCallbackFn& callback);
 
+		uint16_t* getWindowWidthPtr();
+		uint16_t* getWindowHeightPtr();
 	private:
 		void init();
 		void setGLFWCallbacks();
@@ -70,7 +72,8 @@ namespace Core::Window
 	};
 
 	CORE_API int windowShouldClose(const Window& window);
+	CORE_API void swapBuffers(const Window* window);
 	CORE_API void setGLFWWindowHint(int hint, int value);
-	CORE_API void setGLFWCurrentContext(GLFWwindow* window);
+	CORE_API void setGLFWCurrentContext(const Window* newWindowContext);
 	CORE_API GLFWwindow* getGLFWCurrentContext();
 }

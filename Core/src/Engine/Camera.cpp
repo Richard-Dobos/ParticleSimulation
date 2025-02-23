@@ -2,7 +2,7 @@
 
 namespace Core::Engine
 {
-	Camera2d::Camera2d(Transform transform, uint16_t resolutionWidth, uint16_t resolutionHeight, float aspectRatio, float nearClip, float farClip)
+	Camera2d::Camera2d(Components::Transform transform, uint16_t* resolutionWidth, uint16_t* resolutionHeight, float aspectRatio, float nearClip, float farClip)
 		:m_Transform(transform)
 	{
 		m_CameraProperties.resolutionWidth = resolutionWidth;
@@ -18,8 +18,11 @@ namespace Core::Engine
 	}
 
 	const glm::mat4 Camera2d::getProjectionMatrix() const
-	{
-		return glm::ortho(0.0f, (float)m_CameraProperties.resolutionWidth, (float)m_CameraProperties.resolutionHeight, 0.0f, m_CameraProperties.nearClip, m_CameraProperties.farClip);
+	{ 
+		float width = (float)*(m_CameraProperties.resolutionWidth);
+		float height = (float)*(m_CameraProperties.resolutionHeight);
+		
+		return glm::ortho(0.0f, width, height, 0.0f, m_CameraProperties.nearClip, m_CameraProperties.farClip);
 	}
 
 	const CameraProperties* Camera2d::getCameraProperties() const

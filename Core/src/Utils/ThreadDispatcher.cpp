@@ -1,7 +1,5 @@
 #include "ThreadDispatcher.h"
 
-#include "Core.h"
-
 namespace Core::Utils
 {
 	ThreadDispatcher::ThreadDispatcher(uint16_t numberOfThreads)
@@ -40,7 +38,7 @@ namespace Core::Utils
 			workerThreadsToDispatch = 8;
 		}
 
-		LOG_INFO("Thread Dispacher created with {} worker threads.", workerThreadsToDispatch);
+		LOG_INFO("Thread Dispatcher created with {} worker threads.", workerThreadsToDispatch);
 
 		for (uint16_t i = 0; i < workerThreadsToDispatch; i++)
 		{

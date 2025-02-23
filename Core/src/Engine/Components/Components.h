@@ -1,8 +1,9 @@
 #pragma once
 
 #include "glm.hpp"
+#include "string"
 
-namespace Core::Engine
+namespace Core::Engine::Components
 {
 	struct Render
 	{
@@ -11,7 +12,7 @@ namespace Core::Engine
 
 	struct Shader
 	{
-		
+		std::string source;
 	};
 
 	struct Transform
@@ -19,20 +20,21 @@ namespace Core::Engine
 		glm::vec3 pos, scale;
 		float rotation;
 	};
-	
-	struct Velocity
-	{
-		glm::vec3 vel;
-	};
 
 	struct Color
 	{
 		uint8_t r, g, b, a;
 	};
 
+	struct ShaderProgram
+	{
+		uint32_t shaderID;
+	};
+
 	struct Material
 	{
 		glm::vec3 Albedo;
+		
 		float Roughness;
 		float Metallic;
 		float Speculart;

@@ -98,5 +98,6 @@ namespace Core::Event
 		}
 
 		EVENT_CLASS_TYPE(MouseButtonReleased);
+
 	};
 }

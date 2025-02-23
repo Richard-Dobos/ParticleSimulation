@@ -34,7 +34,8 @@ namespace Core::Event
 	{
 		friend class EventDispatcher;
 	public:
-		virtual ~Event() = default;
+		Event() = default;
+		~Event() = default;
 
 		virtual const char* getName() const = 0;
 		virtual EventType getEventType() const = 0;
@@ -69,6 +70,9 @@ namespace Core::Event
 	private:
 		Event& m_Event;
 	};
+	
+	CORE_API inline void pollEvents();
+	CORE_API void onEvent(Event& event);
 
 	inline std::ostream& operator<<(std::ostream& ostream, const Event& event) { return ostream << event.toString(); }
 }

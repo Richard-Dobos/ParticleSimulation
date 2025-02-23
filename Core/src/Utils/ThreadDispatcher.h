@@ -11,7 +11,7 @@
 
 namespace Core::Utils
 {
-	class ThreadDispatcher
+	class CORE_API ThreadDispatcher
 	{
 		using ThreadTask = std::function<void()>;
 

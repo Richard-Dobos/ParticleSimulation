@@ -3,4 +3,4 @@
 #include "Core.h"
 
 #define DEBUG_LOG_ENABLE
-//#define DEBUG_LOG_PERFORMANCE
+#define DEBUG_LOG_PERFORMANCE

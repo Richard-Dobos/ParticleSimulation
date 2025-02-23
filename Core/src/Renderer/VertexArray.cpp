@@ -1,4 +1,7 @@
+#include "Core.h"
+
 #include "VertexArray.h"
+#include "glew.h"
 
 namespace Core::Renderer
 {
